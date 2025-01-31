@@ -1,0 +1,27 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  host: ep-rough-brook-a8m1z80v-pooler.eastus2.azure.neon.tech
+  port: 5432
+  username: neondb_owner
+  password: npg_i4wZVSft0bQj
+  database: neondb
+  schema_search_path: "public"
+
+development:
+  <<: *default
+  database: neondb
+
+# Uncomment the lines below and provide the details if needed
+
+# test:
+#   <<: *default
+#   username: saigaikwad
+#   password: Pa$$word
+
+# production:
+#   <<: *default
+#   database: drug_prod
+#   username: saigaikwad
+#   password: <%= ENV['DATABASE_PASSWORD'] %>

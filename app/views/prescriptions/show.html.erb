@@ -1,0 +1,15 @@
+<h2>Prescription Details</h2>
+
+<p><strong>Patient:</strong> <%= @prescription.patient.name %></p>
+<p><strong>Doctor:</strong> <%= @prescription.doctor.first_name %></p>
+<p><strong>Medicine:</strong> <%= @prescription.medicine.name %></p>
+<p><strong>Quantity:</strong> <%= @prescription.prescription_quantity %></p>
+<p><strong>Duration:</strong> <%= @prescription.duration %> days</p>
+<p><strong>Dosage:</strong> <%= @prescription.dosage_description %></p>
+
+<% if @prescription.qr.present? %>
+  <p><strong>QR Code:</strong></p>
+  <%= raw @prescription.qr.qr_code %>
+<% end %>
+
+<%= link_to "Back to Prescriptions", prescriptions_path, class: "btn btn-secondary" %>

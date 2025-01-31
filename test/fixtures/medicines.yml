@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  exp_date: 2025-01-29
+  form: MyString
+  manufacturer: MyString
+  category: one
+  batch_no: MyString
+  prescribed: false
+
+two:
+  name: MyString
+  exp_date: 2025-01-29
+  form: MyString
+  manufacturer: MyString
+  category: two
+  batch_no: MyString
+  prescribed: false

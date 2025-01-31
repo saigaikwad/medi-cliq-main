@@ -1,0 +1,54 @@
+<%= form_with(model: medicine) do |form| %>
+  <% if medicine.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(medicine.errors.count, "error") %> prohibited this medicine from being saved:</h2>
+
+      <ul>
+        <% medicine.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name, style: "display: block" %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :exp_date, style: "display: block" %>
+    <%= form.date_field :exp_date %>
+  </div>
+
+  <div>
+    <%= form.label :form, style: "display: block" %>
+    <%= form.text_field :form %>
+  </div>
+
+  <div>
+    <%= form.label :manufacturer, style: "display: block" %>
+    <%= form.text_field :manufacturer %>
+  </div>
+
+
+    <div class="mb-3">
+      <%= form.label :category_id_id, "Category" %>
+      <%= form.collection_select :category_id, Category.all, :id, :name, { prompt: "Select Category" }, class: "form-control" %>
+    </div>
+
+
+  <div>
+    <%= form.label :batch_no, style: "display: block" %>
+    <%= form.text_field :batch_no %>
+  </div>
+
+  <div>
+    <%= form.label :prescribed, style: "display: block" %>
+    <%= form.check_box :prescribed %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

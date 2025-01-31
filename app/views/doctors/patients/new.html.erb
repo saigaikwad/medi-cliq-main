@@ -1,0 +1,68 @@
+<h2>Create Patient & Prescription</h2>
+<% if doctor_signed_in? %>
+ <%= form_with model: @patient, url: doctors_patients_path, local: true do |f| %>
+
+  <h3>Patient Details</h3>
+  <div class="mb-3">
+    <%= f.label :name %>
+    <%= f.text_field :name, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :age %>
+    <%= f.number_field :age, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :gender %>
+    <%= f.select :gender, [['Male', 'male'], ['Female', 'female']], {}, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :address %>
+    <%= f.text_area :address, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :phone %>
+    <%= f.text_field :phone, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :email %>
+    <%= f.email_field :email, class: "form-control", required: true %>
+  </div>
+
+  <h3>Prescription Details</h3>
+  <%= f.fields_for :prescriptions do |p| %>
+    <div class="mb-3">
+      <%= p.label :medicine_id, "Medicine" %>
+      <%= p.collection_select :medicine_id, Medicine.all, :id, :name, { prompt: "Select Medicine" }, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= p.label :dosage_description %>
+      <%= p.text_area :dosage_description, class: "form-control", required: true %>
+    </div>
+
+    <div class="mb-3">
+      <%= p.label :prescription_quantity %>
+      <%= p.number_field :prescription_quantity, class: "form-control", required: true %>
+    </div>
+
+    <div class="mb-3">
+      <%= p.label :duration, "Duration (Days)" %>
+      <%= p.number_field :duration, class: "form-control", required: true %>
+    </div>
+
+    <%= p.hidden_field :doctor_id, value: current_doctor.id %>
+  <% end %>
+
+  <%= f.submit "Create Patient", class: "btn btn-primary" %>
+
+ <% end %>
+
+ <%else%>
+
+ <p>You must be signed in as a doctor to create a patient.</p>
+<% end %>

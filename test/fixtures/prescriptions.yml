@@ -1,0 +1,19 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  patient: one
+  doctor: one
+  medicine: one
+  dosage_description: MyText
+  prescription_quantity: 1
+  duration: 1
+  status: false
+
+two:
+  patient: two
+  doctor: two
+  medicine: two
+  dosage_description: MyText
+  prescription_quantity: 1
+  duration: 1
+  status: false
