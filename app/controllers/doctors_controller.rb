@@ -4,5 +4,6 @@ class DoctorsController < ApplicationController
   def dashboard
     @patients = Patient.all
     @medicines = Medicine.all
+    @doctor = current_doctor 
   end
 end

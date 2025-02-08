@@ -3,7 +3,7 @@ class PrescriptionsController < ApplicationController
 
   def index
     
-    @prescriptions = Prescription.includes(:patient, :medicine, :doctor).all
+    @prescriptions = Prescription.includes(:patient, :medicine, :doctor).where(patients: {doctor_id: current_doctor.id})
    # @prescriptions = current_patient.prescriptions
   end
 

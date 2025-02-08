@@ -1,29 +1,27 @@
 Rails.application.routes.draw do
-  namespace :patients do
-    get 'sessions/new'
-    get 'sessions/create'
-    get 'sessions/destroy'
-  end
-  get 'doctors/dashboard'
-  get 'prescriptions/index'
-  get 'prescriptions/show'
-
+  # Devise authentication for doctors and patients
+  devise_for :doctors, controllers: { registrations: 'doctors/registrations' }
   devise_for :patients, skip: [:registrations], controllers: { passwords: 'devise/passwords' }
 
+  # Doctors Dashboard
+  get 'doctors/dashboard', to: 'doctors#dashboard'
+
+  # Prescriptions
   resources :prescriptions, only: [:index, :show]
+  
+  # Medicines & Categories
   resources :medicines
   resources :categories
 
-  devise_for :doctors, controllers: { registrations: 'doctors/registrations' }
+  # Nested routes: Doctors can only see their own patients
+  resources :doctors, only: [] do
+    member do
+      get 'dashboard'  # Fix this route for member-based dashboard
+    end
 
-  namespace :doctors do
-    resources :patients, only: [:new, :create, :index, :show]
+    resources :patients, module: :doctors, only: [:new, :create, :index]
   end
 
- 
-
-
+  # Root path
   root 'doctors#dashboard'
-  #root "patients/sessions#new"
-
 end

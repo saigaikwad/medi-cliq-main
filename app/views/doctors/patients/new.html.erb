@@ -1,6 +1,6 @@
 <h2>Create Patient & Prescription</h2>
 <% if doctor_signed_in? %>
- <%= form_with model: @patient, url: doctors_patients_path, local: true do |f| %>
+ <%= form_with model: @patient, url: doctor_patients_path, local: true do |f| %>
 
   <h3>Patient Details</h3>
   <div class="mb-3">
@@ -31,6 +31,10 @@
   <div class="mb-3">
     <%= f.label :email %>
     <%= f.email_field :email, class: "form-control", required: true %>
+  </div>
+
+  <div>
+    <%= f.hidden_field :doctor_id, value: current_doctor.id %>
   </div>
 
   <h3>Prescription Details</h3>

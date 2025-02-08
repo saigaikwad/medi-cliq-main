@@ -1,0 +1,22 @@
+<h1>My Patients</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Age</th>
+      <th>Gender</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @patients.each do |patient| %>
+      <tr>
+        <td><%= patient.name %></td>
+        <td><%= patient.age %></td>
+        <td><%= patient.gender %></td>
+        <td><%= link_to "View", doctor_patients_path(current_doctor, patient) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

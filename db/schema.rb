@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_01_29_062940) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_01_131532) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -67,6 +67,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_29_062940) do
     t.boolean "last_visited"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "doctor_id"
+    t.index ["doctor_id"], name: "index_patients_on_doctor_id"
     t.index ["email"], name: "index_patients_on_email", unique: true
     t.index ["reset_password_token"], name: "index_patients_on_reset_password_token", unique: true
   end
@@ -95,6 +97,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_01_29_062940) do
   end
 
   add_foreign_key "medicines", "categories"
+  add_foreign_key "patients", "doctors"
   add_foreign_key "prescriptions", "doctors"
   add_foreign_key "prescriptions", "medicines"
   add_foreign_key "prescriptions", "patients"

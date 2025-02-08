@@ -2,8 +2,9 @@
 <% if doctor_signed_in?%>
 <nav>
   <ul>
-    <li><%= link_to "Create Patient", new_doctors_patient_path %></li>
-    <li><%= link_to "View Patients", doctors_patients_path %></li>
+<li><%= link_to "Create Patient", new_doctor_patient_path(current_doctor) %></li>
+<li><%= link_to "View Patients", doctor_patients_path(current_doctor)%></li>
+
     <li><%= link_to "Available Medicines", medicines_path %></li>
     <li class="nav-item">
          <%= link_to 'Logout', destroy_doctor_session_path, data: { turbo_method: :delete }, class: "nav-link"%>
