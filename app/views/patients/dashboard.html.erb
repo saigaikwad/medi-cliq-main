@@ -1,0 +1,56 @@
+<h1>Patient Dashboard</h1>
+
+<p>Welcome, <%= current_patient.name %>!</p>
+
+<h2>Your Appointments</h2>
+
+<table>
+  <tr>
+    <th>Doctor</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+
+  <% @appointments.each do |appointment| %>
+    <tr>
+      <td><%= appointment.doctor.first_name %> <%= appointment.doctor.last_name %></td>
+      <td><%= appointment.date.strftime("%d %b %Y, %I:%M %p") %></td>
+      <td><%= appointment.status.capitalize %></td>
+      <td>
+        <% if appointment.status == "confirmed" %>
+          <a href="<%= video_call_path(appointment) %>" class="btn btn-primary">Join Video Call</a>
+        <% else %>
+          <span class="text-muted">Waiting for Confirmation</span>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+<hr>
+
+<h2>Manage Account</h2>
+<p>
+  <a href="<%= patients_update_password_path %>" class="btn btn-info">Edit password</a>
+  
+  <a href="<%= destroy_patient_session_path %>" data-turbo-method="delete" class="btn btn-danger">Logout</a>
+</p>
+
+<h2>Notifications</h2>
+<div id="notifications">
+  <!-- Notifications will be dynamically added here -->
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    App.cable.subscriptions.create("NotificationChannel", {
+      received(data) {
+        let notificationDiv = document.getElementById("notifications");
+        let notification = document.createElement("p");
+        notification.innerHTML = `<strong>${data.message}</strong>`;
+        notificationDiv.appendChild(notification);
+      }
+    });
+  });
+</script>

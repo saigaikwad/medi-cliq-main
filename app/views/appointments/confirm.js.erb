@@ -1,0 +1,4 @@
+document.getElementById("status-<%= @appointment.id %>").innerHTML = "Confirmed";
+document.getElementById("appointment-<%= @appointment.id %>").querySelector("td:last-child").innerHTML = `
+  <a href="<%= video_call_path(@appointment) %>" class="btn btn-primary">Start Video Call</a>
+`;

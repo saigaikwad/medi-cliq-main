@@ -1,0 +1,14 @@
+<h1>Video Call with <%= @appointment.doctor.first_name %></h1>
+
+<div id="meet"></div>
+
+<script>
+  var domain = "meet.jit.si";
+  var options = {
+    roomName: "<%= @room_name %>",
+    width: 800,
+    height: 600,
+    parentNode: document.querySelector("#meet")
+  };
+  var api = new JitsiMeetExternalAPI(domain, options);
+</script>

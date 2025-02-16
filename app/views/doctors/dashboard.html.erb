@@ -13,6 +13,28 @@
   </ul>
 </nav>
 
+<h2>Appointments</h2>
+<table>
+  <tr>
+    <th>Patient</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+  <% current_doctor.appointments.each do |appointment| %>
+    <tr>
+      <td><%= appointment.patient.name %></td>
+      <td><%= appointment.date.strftime("%d %b %Y, %I:%M %p") %></td>
+      <td><%= appointment.status.capitalize %></td>
+      <td>
+        <%= link_to "Confirm", appointment_path(appointment, status: "confirmed"), method: :patch, class: "btn btn-primary" %>
+        <%= link_to "Cancel", appointment_path(appointment, status: "cancelled"), method: :patch, class: "btn btn-danger" %>
+      </td>
+    </tr>
+  <% end %>
+</table>
+
+
 <% else %>
 <p>please login</p>
 <% end %>

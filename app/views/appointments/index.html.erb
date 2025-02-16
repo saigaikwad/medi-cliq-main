@@ -1,0 +1,29 @@
+<h1>Appointments</h1>
+<table>
+  <tr>
+    <th>Doctor</th>
+    <th>Patient</th>
+    <th>Date</th>
+    <th>Status</th>
+    <th>Action</th>
+  </tr>
+  <% @appointments.each do |appointment| %>
+    <tr id="appointment-<%= appointment.id %>">
+      <td><%= appointment.doctor.first_name %></td>
+      <td><%= appointment.patient.name %></td>
+      <td><%= appointment.date.strftime("%d %b %Y, %I:%M %p") %></td>
+      <td id="status-<%= appointment.id %>"><%= appointment.status.capitalize %></td>
+      <td>
+        <% if current_doctor && appointment.status == "pending" %>
+        <%= button_to "Confirm", confirm_appointment_path(appointment), method: :patch, remote: true, class: "btn btn-success" %>
+        <%= button_to "Cancel", cancel_appointment_path(appointment), method: :patch, remote: true, class: "btn btn-danger" %>
+
+        <% end %>
+
+     <% if appointment.status == "confirmed" %>
+  <%= link_to "Start Video Call", video_call_path(appointment), class: "btn btn-primary" %>
+<% end %>
+      </td>
+    </tr>
+  <% end %>
+</table>

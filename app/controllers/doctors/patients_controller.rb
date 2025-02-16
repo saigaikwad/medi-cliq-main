@@ -10,6 +10,13 @@ class Doctors::PatientsController < ApplicationController
     @patients = current_doctor.patients
   end
 
+
+
+
+  def set_patient
+    @patient = current_patient # Get the currently logged-in patient
+  end
+
   
 
   def create

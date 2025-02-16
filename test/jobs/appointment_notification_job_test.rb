@@ -1,6 +1,6 @@
 require "test_helper"
 
-class Patients::SessionsControllerTest < ActionDispatch::IntegrationTest
+class AppointmentNotificationJobTest < ActiveJob::TestCase
   # test "the truth" do
   #   assert true
   # end

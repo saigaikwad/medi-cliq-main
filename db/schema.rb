@@ -10,9 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_01_131532) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_16_071452) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "appointments", force: :cascade do |t|
+    t.bigint "doctor_id", null: false
+    t.bigint "patient_id", null: false
+    t.datetime "date"
+    t.string "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["doctor_id"], name: "index_appointments_on_doctor_id"
+    t.index ["patient_id"], name: "index_appointments_on_patient_id"
+  end
 
   create_table "categories", force: :cascade do |t|
     t.string "name"
@@ -47,6 +58,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_01_131532) do
     t.boolean "prescribed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "quantity"
+    t.decimal "price"
     t.index ["category_id"], name: "index_medicines_on_category_id"
   end
 
@@ -96,6 +109,8 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_01_131532) do
     t.index ["prescription_id"], name: "index_qrs_on_prescription_id"
   end
 
+  add_foreign_key "appointments", "doctors"
+  add_foreign_key "appointments", "patients"
   add_foreign_key "medicines", "categories"
   add_foreign_key "patients", "doctors"
   add_foreign_key "prescriptions", "doctors"

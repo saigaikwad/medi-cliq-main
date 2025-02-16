@@ -1,0 +1,15 @@
+<h1>Book an Appointment</h1>
+
+<%= form_with model: @appointment, local: true do |f| %>
+  <div>
+    <%= f.label :doctor_id, "Select Doctor" %>
+    <%= f.collection_select :doctor_id, Doctor.all, :id, :first_name %>
+  </div>
+
+  <div>
+    <%= f.label :date, "Select Date & Time" %>
+    <%= f.datetime_field :date %>
+  </div>
+
+  <%= f.submit "Book Appointment", class: "btn btn-primary" %>
+<% end %>
