@@ -1,0 +1,20 @@
+<h1>Admin Dashboard</h1>
+
+<div class="dashboard-stats">
+  <p>Total Patients: <%= @patients_count %></p>
+  <p>Total Doctors: <%= @doctors_count %></p>
+  <p>Total Prescriptions: <%= @prescriptions_count %></p>
+  <p>Total Appointments: <%= @appointments_count %></p>
+  <p>Total Medicines: <%= @medicines_count %></p>
+</div>
+
+<hr>
+
+<h2>Manage Resources</h2>
+<ul>
+  <li><%= link_to "Manage Patients", admin_patients_path %></li>
+  <li><%= link_to "Manage Doctors", admin_doctors_path %></li>
+  <li><%= link_to "Manage Prescriptions", admin_prescriptions_path %></li>
+  <li><%= link_to "Manage Appointments", admin_appointments_path %></li>
+  <li><%= link_to "Manage Medicines", admin_medicines_path %></li>
+</ul>

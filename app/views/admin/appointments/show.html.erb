@@ -1,0 +1,25 @@
+<h1>Appointment Details</h1>
+
+<p>
+  <strong>Patient:</strong>
+  <%= @appointment.patient_id %>
+</p>
+<p>
+  <strong>Doctor:</strong>
+  <%= @appointment.doctor_id %>
+</p>
+<p>
+  <strong>Scheduled At:</strong>
+  <%= @appointment.scheduled_at %>
+</p>
+<p>
+  <strong>Status:</strong>
+  <%= @appointment.status %>
+</p>
+<p>
+  <strong>Notes:</strong>
+  <%= @appointment.notes %>
+</p>
+
+<%= link_to "Edit", edit_admin_appointment_path(@appointment), class: "btn btn-secondary" %>
+<%= link_to "Back to Appointments", admin_appointments_path, class: "btn btn-link" %>

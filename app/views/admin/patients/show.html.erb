@@ -1,0 +1,24 @@
+<h1>Patient Details</h1>
+
+<p>
+  <strong>Name:</strong>
+  <%= @patient.name %>
+</p>
+
+<p>
+  <strong>Email:</strong>
+  <%= @patient.email %>
+</p>
+
+<p>
+  <strong>Phone:</strong>
+  <%= @patient.phone %>
+</p>
+
+<p>
+  <strong>Address:</strong>
+  <%= @patient.address %>
+</p>
+
+<%= link_to "Edit Patient", edit_admin_patient_path(@patient), class: "btn btn-secondary" %>
+<%= link_to "Back to Patients", admin_patients_path, class: "btn btn-link" %>

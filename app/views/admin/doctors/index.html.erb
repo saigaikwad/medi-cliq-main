@@ -1,0 +1,32 @@
+<h1>Doctors</h1>
+
+<%= link_to "New Doctor", new_admin_doctor_path, class: "btn btn-primary" %>
+
+<table>
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Specialization</th>
+    <th>Email</th>
+    <th>Phone</th>
+    <th>Experience</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @doctors.each do |doctor| %>
+    <tr>
+      <td><%= doctor.name %></td>
+      <td><%= doctor.specialization %></td>
+      <td><%= doctor.email %></td>
+      <td><%= doctor.phone %></td>
+      <td><%= doctor.experience %></td>
+      <td>
+        <%= link_to "Show", admin_doctor_path(doctor) %> |
+        <%= link_to "Edit", edit_admin_doctor_path(doctor) %> |
+        <%= link_to "Delete", admin_doctor_path(doctor), method: :delete, data: { confirm: "Are you sure?" } %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

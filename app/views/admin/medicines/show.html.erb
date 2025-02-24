@@ -1,0 +1,25 @@
+<h1>Medicine Details</h1>
+
+<p>
+  <strong>Name:</strong>
+  <%= @medicine.name %>
+</p>
+<p>
+  <strong>Description:</strong>
+  <%= @medicine.description %>
+</p>
+<p>
+  <strong>Price:</strong>
+  <%= number_to_currency(@medicine.price) %>
+</p>
+<p>
+  <strong>Stock:</strong>
+  <%= @medicine.stock %>
+</p>
+<p>
+  <strong>Category:</strong>
+  <%= @medicine.category_id %>
+</p>
+
+<%= link_to "Edit", edit_admin_medicine_path(@medicine), class: "btn btn-secondary" %>
+<%= link_to "Back to Medicines", admin_medicines_path, class: "btn btn-link" %>

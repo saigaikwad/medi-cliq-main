@@ -1,40 +1,38 @@
 Rails.application.routes.draw do
   get 'home/index'
+
   # Devise authentication for doctors and patients
   devise_for :doctors, controllers: { sessions: 'doctors/sessions', registrations: 'doctors/registrations' }
-
   devise_for :patients, controllers: { sessions: 'patients/sessions' }, skip: [:registrations]
 
-# ✅ Ensure the patient dashboard route exists
-get 'patients/dashboard', to: 'patients#dashboard'
+  # Patient Dashboard Redirect for authenticated patients
+  authenticated :patient do
+    root 'patients#dashboard', as: :authenticated_patient_root
+  end
 
-# Patient Dashboard Redirect
-authenticated :patient do
-  root 'patients#dashboard', as: :authenticated_patient_root
-end
-
-  # Doctor Dashboard (Doctors only)
+  # Doctor Dashboard Redirect for authenticated doctors
   authenticated :doctor do
     root 'doctors#dashboard', as: :authenticated_doctor_root
   end
+
+  # Public Homepage (for non-logged-in users)
+  root 'home#index'
+
+  # Additional public routes
+  get 'patients/dashboard', to: 'patients#dashboard'
   get 'doctors/dashboard', to: 'doctors#dashboard'
 
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq'
-  
 
-  # ✅ Public Homepage (for non-logged-in users)
-  root 'home#index'  
-
-  # ✅ Ensure the home page route exists
-  get 'home/index', to: 'home#index'
-
-  # Prescriptions
+  # Prescriptions routes
   resources :prescriptions, only: [:index, :show]
 
   # Medicines & Categories
   resources :medicines
   resources :categories
+
+  # Appointments routes with additional member actions
   resources :appointments, only: [:new, :create, :index, :show, :update] do
     member do
       patch :confirm
@@ -43,13 +41,10 @@ end
     end
   end
 
+  # Additional route for video call (if needed)
   get 'appointments/:id/video_call', to: 'appointments#start_video_call', as: 'video_call'
 
-  resources :appointments, only: [:new, :create, :index, :update, :show]
-
-
-
-
+  # Routes for password editing for patients
   get 'patients/edit_password', to: 'patients#edit_password'
   patch 'patients/update_password', to: 'patients#update_password'
 
@@ -60,5 +55,18 @@ end
     end
 
     resources :patients, module: :doctors, only: [:new, :create, :index]
+  end
+
+  # For admins, change the Devise path to avoid conflict
+  devise_for :admin_users, path: 'admin_auth'
+
+  # AdminUser namespace routes (accessible after admin login)
+  namespace :admin do
+    root to: "dashboard#index"
+    resources :patients
+    resources :doctors
+    resources :prescriptions
+    resources :appointments
+    resources :medicines
   end
 end
