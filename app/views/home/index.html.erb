@@ -1,6 +1,11 @@
-<h1>Welcome to Medi-Cliq</h1>
-<p>This is the public homepage. Please log in.</p>
+<div class="mui-container">
+  <div class="hero">
+    <h1>Welcome to Medi-Cliq</h1>
+    <p>Your trusted platform for online medical consultations. Please log in to continue.</p>
+  </div>
 
-<%= link_to "Patient Login", new_patient_session_path, class: "btn btn-primary" %>
-<%= link_to "Doctor Login", new_doctor_session_path, class: "btn btn-secondary" %>
-
+  <div class="button-group">
+    <%= link_to "👨‍⚕️ Patient Login", new_patient_session_path, class: "mui-btn mui-btn--raised mui-btn--primary" %>
+    <%= link_to "🩺 Doctor Login", new_doctor_session_path, class: "mui-btn mui-btn--raised mui-btn--error" %>
+  </div>
+</div>

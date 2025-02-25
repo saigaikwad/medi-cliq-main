@@ -1,56 +1,58 @@
-<h2>Sign up</h2>
+<div class="mui-container signup-container">
+  <h2 class="mui-typography--headline">Sign Up</h2>
 
-<%= form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f| %>
-  <%= render "doctors/shared/error_messages", resource: resource %>
+  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "mui-form" }) do |f| %>
 
+    <%= render "doctors/shared/error_messages", resource: resource %>
 
-  <div class="field">
-  <%= f.label :first_name %>
-  <%= f.text_field :first_name, required: true %>
+    <div class="mui-textfield">
+      <%= f.label :first_name, class: "mui-textfield__label" %>
+      <%= f.text_field :first_name, required: true, class: "mui-textfield__input" %>
+    </div>
+
+    <div class="mui-textfield">
+      <%= f.label :last_name, class: "mui-textfield__label" %>
+      <%= f.text_field :last_name, required: true, class: "mui-textfield__input" %>
+    </div>
+
+    <div class="mui-textfield">
+      <%= f.label :license_no, "License Number", class: "mui-textfield__label" %>
+      <%= f.text_field :license_no, required: true, class: "mui-textfield__input" %>
+    </div>
+
+    <div class="mui-textfield">
+      <%= f.label :phone_number, class: "mui-textfield__label" %>
+      <%= f.text_field :phone_number, required: true, class: "mui-textfield__input" %>
+    </div>
+
+    <div class="mui-textfield">
+      <%= f.label :education, class: "mui-textfield__label" %>
+      <%= f.text_field :education, required: true, class: "mui-textfield__input" %>
+    </div>
+
+    <div class="mui-textfield">
+      <%= f.label :email, class: "mui-textfield__label" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mui-textfield__input" %>
+    </div>
+
+    <div class="mui-textfield">
+      <%= f.label :password, class: "mui-textfield__label" %>
+      <% if @minimum_password_length %>
+        <em class="password-hint">(<%= @minimum_password_length %> characters minimum)</em>
+      <% end %>
+      <%= f.password_field :password, autocomplete: "new-password", class: "mui-textfield__input" %>
+    </div>
+
+    <div class="mui-textfield">
+      <%= f.label :password_confirmation, class: "mui-textfield__label" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "mui-textfield__input" %>
+    </div>
+
+    <div class="mui-button-container">
+      <%= f.submit "Sign Up", class: "mui-btn3 mui-btn--raised mui-btn--primary" %>
+    </div>
+
+  <% end %>
+
+  <%= render "doctors/shared/links" %>
 </div>
-
-<div class="field">
-  <%= f.label :last_name %>
-  <%= f.text_field :last_name, required: true %>
-</div>
-
-<div class="field">
-  <%= f.label :license_no, "License Number" %>
-  <%= f.text_field :license_no, required: true %>
-</div>
-
-<div class="field">
-  <%= f.label :phone_number %>
-  <%= f.text_field :phone_number, required: true %>
-</div>
-
-<div class="field">
-  <%= f.label :education %>
-  <%= f.text_field :education, required: true %>
-</div>
-
-
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %>
-    <% if @minimum_password_length %>
-    <em>(<%= @minimum_password_length %> characters minimum)</em>
-    <% end %><br />
-    <%= f.password_field :password, autocomplete: "new-password" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password_confirmation %><br />
-    <%= f.password_field :password_confirmation, autocomplete: "new-password" %>
-  </div>
-
-  <div class="actions">
-    <%= f.submit "Sign up" %>
-  </div>
-<% end %>
-
-<%= render "doctors/shared/links" %>

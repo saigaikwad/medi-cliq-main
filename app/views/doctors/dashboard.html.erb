@@ -1,40 +1,50 @@
-<h1>Doctor Dashboard</h1>
-<% if doctor_signed_in?%>
-<nav>
+<!-- Hamburger Menu for Mobile -->
+<div class="hamburger" onclick="toggleSidebar()">☰</div>
+
+<!-- Sidebar Navigation -->
+<nav class="sidebar" id="sidebar">
   <ul>
-<li><%= link_to "Create Patient", new_doctor_patient_path(current_doctor) %></li>
-<li><%= link_to "View Patients", doctor_patients_path(current_doctor)%></li>
-
+    <li><%= link_to "Create Patient", new_doctor_patient_path(current_doctor) %></li>
+    <li><%= link_to "View Patients", doctor_patients_path(current_doctor) %></li>
     <li><%= link_to "Available Medicines", medicines_path %></li>
-    <li class="nav-item">
-         <%= link_to 'Logout', destroy_doctor_session_path, data: { turbo_method: :delete }, class: "nav-link"%>
-
-          </li>
+    <li><%= link_to "Logout", destroy_doctor_session_path, data: { turbo_method: :delete }, class: "nav-link" %></li>
   </ul>
 </nav>
 
-<h2>Appointments</h2>
-<table>
-  <tr>
-    <th>Patient</th>
-    <th>Date</th>
-    <th>Status</th>
-    <th>Action</th>
-  </tr>
-  <% current_doctor.appointments.each do |appointment| %>
-    <tr>
-      <td><%= appointment.patient.name %></td>
-      <td><%= appointment.date.strftime("%d %b %Y, %I:%M %p") %></td>
-      <td><%= appointment.status.capitalize %></td>
-      <td>
-        <%= link_to "Confirm", appointment_path(appointment, status: "confirmed"), method: :patch, class: "btn btn-primary" %>
-        <%= link_to "Cancel", appointment_path(appointment, status: "cancelled"), method: :patch, class: "btn btn-danger" %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<!-- Main Content Area -->
+<div class="content">
+  <h1>Doctor Dashboard</h1>
 
+  <h2>Appointments</h2>
+  <div class="table-container">
+    <table class="mui-table">
+      <thead>
+        <tr>
+          <th>Patient</th>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% current_doctor.appointments.each do |appointment| %>
+          <tr>
+            <td><%= appointment.patient.name %></td>
+            <td><%= appointment.date.strftime("%d %b %Y, %I:%M %p") %></td>
+            <td>
+              <span class="status-label <%= appointment.status == 'confirmed' ? 'confirmed' : 'pending' %>">
+                <%= appointment.status.capitalize %>
+              </span>
+            </td>
+            <td>
+              <%= link_to "Confirm", appointment_path(appointment, status: "confirmed"), method: :patch, class: "mui-btn mui-btn--small mui-btn--primary" %>
+              <%= link_to "Cancel", appointment_path(appointment, status: "cancelled"), method: :patch, class: "mui-btn mui-btn--small mui-btn--danger" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-<% else %>
-<p>please login</p>
-<% end %>
+<script></script>

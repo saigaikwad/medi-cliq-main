@@ -1,26 +1,32 @@
-<h2>Log in</h2>
+<div class="mui-container login-container">
+  <h2 class="mui-typography--headline">Log in</h2>
 
-<%= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f| %>
-  <div class="field">
-    <%= f.label :email %><br />
-    <%= f.email_field :email, autofocus: true, autocomplete: "email" %>
-  </div>
-
-  <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password, autocomplete: "current-password" %>
-  </div>
-
-  <% if devise_mapping.rememberable? %>
-    <div class="field">
-      <%= f.check_box :remember_me %>
-      <%= f.label :remember_me %>
+  <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "mui-form" }) do |f| %>
+    
+    <div class="mui-textfield">
+      <%= f.label :email, class: "mui-textfield__label" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mui-textfield__input" %>
     </div>
+
+    <div class="mui-textfield">
+      <%= f.label :password, class: "mui-textfield__label" %>
+      <%= f.password_field :password, autocomplete: "current-password", class: "mui-textfield__input" %>
+    </div>
+
+    <% if devise_mapping.rememberable? %>
+      <div class="mui-checkbox">
+        <label>
+          <%= f.check_box :remember_me, class: "mui-checkbox__input" %>
+          <span>Remember me</span>
+        </label>
+      </div>
+    <% end %>
+
+    <div class="mui-button-container">
+      <%= f.submit "Log in", class: "mui-btn2 mui-btn--raised mui-btn--primary" %>
+    </div>
+
   <% end %>
 
-  <div class="actions">
-    <%= f.submit "Log in" %>
-  </div>
-<% end %>
-
-<%= render "doctors/shared/links" %>
+  <%= render "doctors/shared/links" %>
+</div>

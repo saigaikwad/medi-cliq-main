@@ -1,72 +1,99 @@
-<h2>Create Patient & Prescription</h2>
 <% if doctor_signed_in? %>
- <%= form_with model: @patient, url: doctor_patients_path, local: true do |f| %>
+  <div class="container">
+    <div class="form-card">
+      <h2 class="form-title">Create Prescription</h2>
 
-  <h3>Patient Details</h3>
-  <div class="mb-3">
-    <%= f.label :name %>
-    <%= f.text_field :name, class: "form-control", required: true %>
-  </div>
+      <%= form_with model: @patient, url: doctor_patients_path, local: true, class: "mui-form" do |f| %>
+        <!-- Patient Details -->
+        <h3 class="section-title">Patient Details</h3>
+        <div class="mui-grid">
+          <div class="mui-grid-item">
+            <%= f.label :name, "Patient Name", class: "mui-label" %>
+            <%= f.text_field :name, class: "mui-textfield", required: true %>
+          </div>
 
-  <div class="mb-3">
-    <%= f.label :age %>
-    <%= f.number_field :age, class: "form-control", required: true %>
-  </div>
+          <div class="mui-grid-item">
+            <%= f.label :age, "Age", class: "mui-label" %>
+            <%= f.number_field :age, class: "mui-textfield", required: true %>
+          </div>
 
-  <div class="mb-3">
-    <%= f.label :gender %>
-    <%= f.select :gender, [['Male', 'male'], ['Female', 'female']], {}, class: "form-control", required: true %>
-  </div>
+          <div class="mui-grid-item">
+            <%= f.label :gender, "Gender", class: "mui-label" %>
+          <%= f.select :gender, [['Male', 'male'], ['Female', 'female']], {prompt: "select gender",}, { class: "mui-dropdown", required: true } %>
 
-  <div class="mb-3">
-    <%= f.label :address %>
-    <%= f.text_area :address, class: "form-control", required: true %>
-  </div>
+          </div>
 
-  <div class="mb-3">
-    <%= f.label :phone %>
-    <%= f.text_field :phone, class: "form-control", required: true %>
-  </div>
+          <div class="mui-grid-item">
+            <%= f.label :phone, "Phone Number", class: "mui-label" %>
+            <%= f.text_field :phone, class: "mui-textfield", required: true %>
+          </div>
 
-  <div class="mb-3">
-    <%= f.label :email %>
-    <%= f.email_field :email, class: "form-control", required: true %>
-  </div>
+          <div class="mui-grid-item">
+            <%= f.label :email, "Email", class: "mui-label" %>
+            <%= f.email_field :email, class: "mui-textfield", required: true %>
+          </div>
 
-  <div>
-    <%= f.hidden_field :doctor_id, value: current_doctor.id %>
-  </div>
+           <div class="mui-grid-item">
+            <%= f.label :allergies, "Allergies", class: "mui-label" %>
+            <%= f.text_field :allergies, class: "mui-textfield", required: true %>
+          </div>
+           <div class="mui-grid-item">
+            <%= f.label :blood, "Blood", class: "mui-label" %>
+            <%= f.text_field :blood, class: "mui-textfield", required: true %>
+          </div>
 
-  <h3>Prescription Details</h3>
-  <%= f.fields_for :prescriptions do |p| %>
-    <div class="mb-3">
-      <%= p.label :medicine_id, "Medicine" %>
-      <%= p.collection_select :medicine_id, Medicine.all, :id, :name, { prompt: "Select Medicine" }, class: "form-control" %>
+           <div class="mui-grid-item">
+            <%= f.label :dob, "Date of Birth", class: "mui-label" %>
+            <%= f.date_field :dob, class: "mui-textfield", required: true %>
+          </div>
+
+<div class="mui-grid-item">
+  <%= f.label :last_visited, "Last visited", class: "mui-label" %>
+  <%= f.check_box :last_visited, {}, "1", "0" %>
+</div>
+
+
+        </div>
+
+        <%= f.hidden_field :doctor_id, value: current_doctor.id %>
+
+        <!-- Prescription Details -->
+        <h3 class="section-title">Prescription Details</h3>
+        <%= f.fields_for :prescriptions do |p| %>
+          <div class="mui-grid">
+            <div class="mui-grid-item">
+              <%= p.label :medicine_id, "Select Medicine", class: "mui-label" %>
+              <%= p.collection_select :medicine_id, Medicine.all, :id, :name, { prompt: "Select Medicine" }, { class: "mui-dropdown" } %>
+
+
+            </div>
+
+            <div class="mui-grid-item">
+              <%= p.label :dosage_description, "Dosage Description", class: "mui-label" %>
+              <%= p.text_area :dosage_description, class: "mui-textfield", required: true %>
+            </div>
+
+            <div class="mui-grid-item">
+              <%= p.label :prescription_quantity, "Quantity", class: "mui-label" %>
+              <%= p.number_field :prescription_quantity, class: "mui-textfield", required: true %>
+            </div>
+
+            <div class="mui-grid-item">
+              <%= p.label :duration, "Duration (Days)", class: "mui-label" %>
+              <%= p.number_field :duration, class: "mui-textfield", required: true %>
+            </div>
+          </div>
+
+          <%= p.hidden_field :doctor_id, value: current_doctor.id %>
+        <% end %>
+
+        <div class="mui-grid">
+          <button type="submit" class="mui-button">Create Patient</button>
+        </div>
+
+      <% end %>
     </div>
-
-    <div class="mb-3">
-      <%= p.label :dosage_description %>
-      <%= p.text_area :dosage_description, class: "form-control", required: true %>
-    </div>
-
-    <div class="mb-3">
-      <%= p.label :prescription_quantity %>
-      <%= p.number_field :prescription_quantity, class: "form-control", required: true %>
-    </div>
-
-    <div class="mb-3">
-      <%= p.label :duration, "Duration (Days)" %>
-      <%= p.number_field :duration, class: "form-control", required: true %>
-    </div>
-
-    <%= p.hidden_field :doctor_id, value: current_doctor.id %>
-  <% end %>
-
-  <%= f.submit "Create Patient", class: "btn btn-primary" %>
-
- <% end %>
-
- <%else%>
-
- <p>You must be signed in as a doctor to create a patient.</p>
+  </div>
+<% else %>
+  <p class="error-message">You must be signed in as a doctor to create a patient.</p>
 <% end %>
