@@ -1,15 +1,19 @@
 <h1>Medicines</h1>
 
-<%= link_to "New Medicine", new_admin_medicine_path, class: "btn btn-primary" %>
+<%= link_to "Back to Dashboard", admin_root_path, class: "btn btn-secondary" %>
 
-<table>
+<%= form_with url: admin_medicines_path, method: :get, local: true do |f| %>
+  <%= f.label :q, "Search" %>
+  <%= f.search_field :q, value: params[:q] %>
+  <%= f.submit "Search" %>
+<% end %>
+
+<table class="table">
   <thead>
   <tr>
     <th>Name</th>
-    <th>Description</th>
+    <th>Manufacturer</th>
     <th>Price</th>
-    <th>Stock</th>
-    <th>Category</th>
     <th>Actions</th>
   </tr>
   </thead>
@@ -17,16 +21,18 @@
   <% @medicines.each do |medicine| %>
     <tr>
       <td><%= medicine.name %></td>
-      <td><%= medicine.description %></td>
+      <td><%= medicine.manufacturer %></td>
       <td><%= number_to_currency(medicine.price) %></td>
-      <td><%= medicine.stock %></td>
-      <td><%= medicine.category_id %></td>
       <td>
-        <%= link_to "Show", admin_medicine_path(medicine) %> |
-        <%= link_to "Edit", edit_admin_medicine_path(medicine) %> |
-        <%= link_to "Delete", admin_medicine_path(medicine), method: :delete, data: { confirm: "Are you sure?" } %>
+        <%= link_to 'Show', admin_medicine_path(medicine) %> |
+        <%= link_to 'Edit', edit_admin_medicine_path(medicine) %> |
+        <%= link_to 'Delete', admin_medicine_path(medicine), method: :delete, data: { confirm: "Are you sure?" } %>
       </td>
     </tr>
   <% end %>
   </tbody>
 </table>
+
+<%= paginate @medicines %>
+
+<%= link_to 'New Medicine', new_admin_medicine_path, class: "btn btn-success" %>

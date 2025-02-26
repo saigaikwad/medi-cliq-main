@@ -12,16 +12,3 @@ default: &default
 development:
   <<: *default
   database: neondb
-
-# Uncomment the lines below and provide the details if needed
-
-# test:
-#   <<: *default
-#   username: saigaikwad
-#   password: Pa$$word
-
-# production:
-#   <<: *default
-#   database: drug_prod
-#   username: saigaikwad
-#   password: <%= ENV['DATABASE_PASSWORD'] %>

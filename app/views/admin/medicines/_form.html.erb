@@ -1,42 +1,21 @@
-<%= form_with(model: [:admin, medicine], local: true) do |form| %>
-  <% if medicine.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(medicine.errors.count, "error") %> prohibited this medicine from being saved:</h2>
-      <ul>
-        <% medicine.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
+<%= form_with(model: @medicine, local: true) do |f| %>
   <div class="form-group">
-    <%= form.label :name %>
-    <%= form.text_field :name, class: "form-control" %>
+    <%= f.label :name, "Name" %>
+    <%= f.text_field :name, class: "form-control" %>
   </div>
-
   <div class="form-group">
-    <%= form.label :description %>
-    <%= form.text_area :description, class: "form-control" %>
+    <%= f.label :manufacturer, "Manufacturer" %>
+    <%= f.text_field :manufacturer, class: "form-control" %>
   </div>
-
   <div class="form-group">
-    <%= form.label :price %>
-    <%= form.number_field :price, step: 0.01, class: "form-control" %>
+    <%= f.label :exp_date, "Expiration Date" %>
+    <%= f.date_field :exp_date, class: "form-control" %>
   </div>
-
   <div class="form-group">
-    <%= form.label :stock %>
-    <%= form.number_field :stock, class: "form-control" %>
+    <%= f.label :price, "Price" %>
+    <%= f.number_field :price, class: "form-control", step: 0.01 %>
   </div>
-
-  <div class="form-group">
-    <%= form.label :category_id, "Category" %>
-    <%= form.number_field :category_id, class: "form-control" %>
-    <!-- You might replace this with a select box if you have a Category model -->
-  </div>
-
-  <div class="actions">
-    <%= form.submit class: "btn btn-primary" %>
-  </div>
+  <%= f.submit "Save Medicine", class: "btn btn-primary" %>
 <% end %>
+
+<%= link_to "Cancel", admin_medicines_path, class: "btn btn-secondary mt-3" %>

@@ -72,3 +72,11 @@ group :test do
 end
 
 gem "rqrcode", "~> 2.2"
+
+gem 'kaminari'
+gem 'paranoia'
+gem 'paper_trail'
+
+gem "ransack", "~> 4.3"
+
+gem "will_paginate", "~> 4.0"

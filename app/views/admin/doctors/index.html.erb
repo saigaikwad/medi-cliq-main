@@ -1,32 +1,38 @@
 <h1>Doctors</h1>
 
-<%= link_to "New Doctor", new_admin_doctor_path, class: "btn btn-primary" %>
+<%= link_to "Back to Dashboard", admin_root_path, class: "btn btn-secondary" %>
 
-<table>
+<%= form_with url: admin_doctors_path, method: :get, local: true do |f| %>
+  <%= f.label :q, "Search" %>
+  <%= f.search_field :q, value: params[:q] %>
+  <%= f.submit "Search" %>
+<% end %>
+
+<table class="table">
   <thead>
   <tr>
     <th>Name</th>
-    <th>Specialization</th>
     <th>Email</th>
     <th>Phone</th>
-    <th>Experience</th>
     <th>Actions</th>
   </tr>
   </thead>
   <tbody>
   <% @doctors.each do |doctor| %>
     <tr>
-      <td><%= doctor.name %></td>
-      <td><%= doctor.specialization %></td>
+      <td><%= doctor.first_name %> <%= doctor.last_name %></td>
       <td><%= doctor.email %></td>
-      <td><%= doctor.phone %></td>
-      <td><%= doctor.experience %></td>
+      <td><%= doctor.phone_number %></td>
       <td>
-        <%= link_to "Show", admin_doctor_path(doctor) %> |
-        <%= link_to "Edit", edit_admin_doctor_path(doctor) %> |
-        <%= link_to "Delete", admin_doctor_path(doctor), method: :delete, data: { confirm: "Are you sure?" } %>
+        <%= link_to 'Show', admin_doctor_path(doctor) %> |
+        <%= link_to 'Edit', edit_admin_doctor_path(doctor) %> |
+        <%= link_to 'Delete', admin_doctor_path(doctor), method: :delete, data: { confirm: "Are you sure?" } %>
       </td>
     </tr>
   <% end %>
   </tbody>
 </table>
+
+<%= paginate @doctors %>
+
+<%= link_to 'New Doctor', new_admin_doctor_path, class: "btn btn-success" %>

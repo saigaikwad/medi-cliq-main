@@ -1,11 +1,20 @@
 <h1>Patients</h1>
 
-<%= link_to "New Patient", new_admin_patient_path %>
+<!-- Back to Dashboard Button -->
+<%= link_to "Back to Dashboard", admin_root_path, class: "btn btn-secondary mb-3" %>
 
-<table>
+<!-- Search Form -->
+<%= form_with url: admin_patients_path, method: :get, local: true do |f| %>
+  <%= f.label :q, "Search" %>
+  <%= f.search_field :q, value: params[:q] %>
+  <%= f.submit "Search" %>
+<% end %>
+
+<table class="table">
   <thead>
   <tr>
-    <th>Name</th>
+    <th>First Name</th>
+    <th>Last Name</th>
     <th>Email</th>
     <th>Phone</th>
     <th>Actions</th>
@@ -15,14 +24,19 @@
   <% @patients.each do |patient| %>
     <tr>
       <td><%= patient.name %></td>
+      <td><%= patient.name %></td>
       <td><%= patient.email %></td>
       <td><%= patient.phone %></td>
       <td>
-        <%= link_to "Show", admin_patient_path(patient) %> |
-        <%= link_to "Edit", edit_admin_patient_path(patient) %> |
-        <%= link_to "Delete", admin_patient_path(patient), method: :delete, data: { confirm: "Are you sure?" } %>
+        <%= link_to 'Show', admin_patient_path(patient) %> |
+        <%= link_to 'Edit', edit_admin_patient_path(patient) %> |
+        <%= link_to 'Delete', admin_patient_path(patient), method: :delete, data: { confirm: "Are you sure?" } %>
       </td>
     </tr>
   <% end %>
   </tbody>
 </table>
+
+<%= paginate @patients %>
+
+<%= link_to 'New Patient', new_admin_patient_path, class: "btn btn-success" %>

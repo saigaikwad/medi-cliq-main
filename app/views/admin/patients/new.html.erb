@@ -1,5 +1,38 @@
-<h1>New Patient</h1>
+<h2>New Patient</h2>
 
-<%= render "form", patient: @patient %>
+<%= form_with(model: @patient, url: admin_patients_path, local: true) do |f| %>
 
-<%= link_to "Back to Patients", admin_patients_path, class: "btn btn-link" %>
+  <div class="form-group">
+    <%= f.label :first_name, "First Name" %>
+    <%= f.text_field :first_name, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :last_name, "Last Name" %>
+    <%= f.text_field :last_name, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :email, "Email" %>
+    <%= f.email_field :email, class: "form-control", value: "dahiwalsanskruti@gmail.com" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :phone, "Phone Number" %>
+    <%= f.text_field :phone, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :dob, "Date of Birth" %>
+    <%= f.date_field :dob, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :medical_history, "Medical History" %>
+    <%= f.text_area :medical_history, class: "form-control" %>
+  </div>
+
+  <%= f.submit "Create Patient", class: "btn btn-primary mt-3" %>
+<% end %>
+
+<%= link_to "Cancel", admin_patients_path, class: "btn btn-secondary mt-3" %>

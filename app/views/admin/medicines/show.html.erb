@@ -1,25 +1,16 @@
 <h1>Medicine Details</h1>
 
-<p>
-  <strong>Name:</strong>
-  <%= @medicine.name %>
-</p>
-<p>
-  <strong>Description:</strong>
-  <%= @medicine.description %>
-</p>
-<p>
-  <strong>Price:</strong>
-  <%= number_to_currency(@medicine.price) %>
-</p>
-<p>
-  <strong>Stock:</strong>
-  <%= @medicine.stock %>
-</p>
-<p>
-  <strong>Category:</strong>
-  <%= @medicine.category_id %>
-</p>
+<%= link_to "Back to Dashboard", admin_root_path, class: "btn btn-secondary" %>
 
-<%= link_to "Edit", edit_admin_medicine_path(@medicine), class: "btn btn-secondary" %>
-<%= link_to "Back to Medicines", admin_medicines_path, class: "btn btn-link" %>
+<p><strong>Name:</strong> <%= @medicine.name %></p>
+<p><strong>Manufacturer:</strong> <%= @medicine.manufacturer %></p>
+<p><strong>Expiration Date:</strong> <%= @medicine.exp_date %></p>
+<p><strong>Form:</strong> <%= @medicine.form %></p>
+<p><strong>Batch No:</strong> <%= @medicine.batch_no %></p>
+<p><strong>Prescribed:</strong> <%= @medicine.prescribed ? "Yes" : "No" %></p>
+<p><strong>Quantity:</strong> <%= @medicine.quantity %></p>
+<p><strong>Price:</strong> <%= number_to_currency(@medicine.price) %></p>
+
+<%= link_to 'Edit', edit_admin_medicine_path(@medicine), class: "btn btn-warning" %>
+<%= link_to 'Delete', admin_medicine_path(@medicine), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+<%= link_to 'Back to Medicines', admin_medicines_path, class: "btn btn-secondary" %>

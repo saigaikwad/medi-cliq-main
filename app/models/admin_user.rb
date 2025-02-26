@@ -1,5 +1,6 @@
 class AdminUser < ApplicationRecord
   self.table_name = 'admins'
+  has_secure_password
   devise :database_authenticatable, :recoverable, :rememberable, :validatable
 
   before_validation :downcase_email

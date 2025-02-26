@@ -1,5 +1,5 @@
 module Admin
-  class DashboardController < BaseController
+  class DashboardController < ApplicationController
     #add admin authentication here
     before_action :authenticate_admin_user!
 

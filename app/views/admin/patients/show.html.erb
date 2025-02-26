@@ -1,24 +1,12 @@
 <h1>Patient Details</h1>
 
-<p>
-  <strong>Name:</strong>
-  <%= @patient.name %>
-</p>
+<%= link_to "Back to Dashboard", admin_root_path, class: "btn btn-secondary mb-3" %>
 
-<p>
-  <strong>Email:</strong>
-  <%= @patient.email %>
-</p>
+<p><strong>Name:</strong> <%= @patient.name %> <%= @patient.name %></p>
+<p><strong>Email:</strong> <%= @patient.email %></p>
+<p><strong>Phone:</strong> <%= @patient.phone %></p>
+<p><strong>Date of Birth:</strong> <%= @patient.dob %></p>
 
-<p>
-  <strong>Phone:</strong>
-  <%= @patient.phone %>
-</p>
-
-<p>
-  <strong>Address:</strong>
-  <%= @patient.address %>
-</p>
-
-<%= link_to "Edit Patient", edit_admin_patient_path(@patient), class: "btn btn-secondary" %>
-<%= link_to "Back to Patients", admin_patients_path, class: "btn btn-link" %>
+<%= link_to "Edit", edit_admin_patient_path(@patient), class: "btn btn-warning" %>
+<%= link_to "Delete", admin_patient_path(@patient), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+<%= link_to "Back to Patients", admin_patients_path, class: "btn btn-secondary" %>

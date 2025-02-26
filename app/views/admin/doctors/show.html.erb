@@ -1,25 +1,13 @@
 <h1>Doctor Details</h1>
 
-<p>
-  <strong>Name:</strong>
-  <%= @doctor.name %>
-</p>
-<p>
-  <strong>Specialization:</strong>
-  <%= @doctor.specialization %>
-</p>
-<p>
-  <strong>Email:</strong>
-  <%= @doctor.email %>
-</p>
-<p>
-  <strong>Phone:</strong>
-  <%= @doctor.phone %>
-</p>
-<p>
-  <strong>Experience:</strong>
-  <%= @doctor.experience %>
-</p>
+<%= link_to "Back to Dashboard", admin_root_path, class: "btn btn-secondary" %>
 
-<%= link_to "Edit", edit_admin_doctor_path(@doctor), class: "btn btn-secondary" %>
-<%= link_to "Back to Doctors", admin_doctors_path, class: "btn btn-link" %>
+<p><strong>Name:</strong> <%= @doctor.first_name %> <%= @doctor.last_name %></p>
+<p><strong>Email:</strong> <%= @doctor.email %></p>
+<p><strong>Phone:</strong> <%= @doctor.phone_number %></p>
+<p><strong>License No:</strong> <%= @doctor.license_no %></p>
+<p><strong>Education:</strong> <%= @doctor.education %></p>
+
+<%= link_to 'Edit', edit_admin_doctor_path(@doctor), class: "btn btn-warning" %>
+<%= link_to 'Delete', admin_doctor_path(@doctor), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-danger" %>
+<%= link_to 'Back to Doctors', admin_doctors_path, class: "btn btn-secondary" %>

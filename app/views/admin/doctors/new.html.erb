@@ -1,5 +1,10 @@
 <h1>New Doctor</h1>
 
-<%= render "form", doctor: @doctor %>
+<%= link_to "Back to Dashboard", admin_root_path, class: "btn btn-secondary" %>
 
-<%= link_to "Back to Doctors", admin_doctors_path, class: "btn btn-link" %>
+<%= form_with model: @doctor, url: admin_doctors_path, local: true do |f| %>
+  <%= render "form", f: f %>
+  <%= f.submit "Create Doctor", class: "btn btn-success" %>
+<% end %>
+
+<%= link_to 'Back to Doctors', admin_doctors_path, class: "btn btn-secondary" %>

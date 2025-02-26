@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_24_145235) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_26_071709) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -27,7 +27,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_24_145235) do
   end
 
   create_table "appointments", force: :cascade do |t|
-    t.bigint "doctor_id", null: false
+    t.bigint "doctor_id"
     t.bigint "patient_id", null: false
     t.datetime "date"
     t.string "status"
@@ -100,7 +100,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_24_145235) do
 
   create_table "prescriptions", force: :cascade do |t|
     t.bigint "patient_id", null: false
-    t.bigint "doctor_id", null: false
+    t.bigint "doctor_id"
     t.bigint "medicine_id", null: false
     t.text "dosage_description"
     t.integer "prescription_quantity"
