@@ -14,16 +14,15 @@ class Prescription < ApplicationRecord
     qr_data = prescriptions.map do |prescription|
       {
         medicine_id: prescription.medicine.id,
-        medicine_name: prescription.medicine.name,
+        
         quantity: prescription.prescription_quantity,
-        dosage: prescription.dosage_description,
-        duration: prescription.duration
+   
       }
     end
 
     qr_code_data = {
       patient_id: patient.id,
-      patient_name: patient.name,
+      
       medicines: qr_data
     }.to_json
 

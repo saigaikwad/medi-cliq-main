@@ -1,14 +1,117 @@
-<p style="color: green"><%= notice %></p>
-
-<h1>Medicines</h1>
-
-<div id="medicines">
-  <% @medicines.each do |medicine| %>
-    <%= render medicine %>
-    <p>
-      <%= link_to "Show this medicine", medicine %>
-    </p>
+<div class="container" style="max-width: 1200px; margin: 0 auto; padding: 20px;">
+  <% if notice %>
+    <div class="mui-panel mui--bg-primary" style="padding: 15px; border-radius: 6px; margin-bottom: 20px; background-color: #c8e6c9;">
+      <p style="color: #2e7d32; margin: 0; font-size: 16px;"><%= notice %></p>
+    </div>
   <% end %>
+
+  <div class="mui-panel" style="padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); background-color: white; margin-bottom: 30px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+      <h1 style="color: #3f51b5; font-weight: 500; margin: 0;">Medicines</h1>
+      <%= link_to new_medicine_path, class: "mui-btn mui-btn--raised mui-btn--primary", style: "background-color: #3f51b5; text-transform: uppercase; display: flex; align-items: center;" do %>
+        <i class="material-icons" style="margin-right: 8px;">add</i> New Medicine
+      <% end %>
+    </div>
+
+    <div class="medicines-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+      <% @medicines.each do |medicine| %>
+        <div class="medicine-card mui-panel" style="padding: 20px; border-radius: 8px; transition: all 0.3s ease; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
+          <%= render medicine %>
+          <div style="margin-top: 15px; text-align: right;">
+            <%= link_to medicine, class: "mui-btn mui-btn--flat", style: "color: #3f51b5; font-weight: 500;" do %>
+              <i class="material-icons" style="vertical-align: middle; font-size: 18px; margin-right: 5px;">visibility</i> View Details
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+    
+    <% if @medicines.empty? %>
+      <div class="empty-state" style="text-align: center; padding: 40px 20px;">
+        <i class="material-icons" style="font-size: 64px; color: #b0bec5; margin-bottom: 15px;">medical_services</i>
+        <h3 style="color: #546e7a; font-weight: normal; margin-bottom: 10px;">No medicines found</h3>
+        <p style="color: #78909c; margin-bottom: 20px;">Start by adding your first medicine to the inventory.</p>
+        <%= link_to new_medicine_path, class: "mui-btn mui-btn--raised mui-btn--primary", style: "background-color: #3f51b5;" do %>
+          <i class="material-icons" style="margin-right: 8px;">add</i> Add Medicine
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>
 
-<%= link_to "New medicine", new_medicine_path %>
+<!-- Add Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!-- Add custom responsive styles -->
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  }
+  
+  .mui-btn--primary {
+    background-color: #3f51b5;
+    transition: background-color 0.3s ease;
+  }
+  
+  .mui-btn--primary:hover {
+    background-color: #303f9f;
+  }
+  
+  .medicine-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+  }
+  
+  @media (max-width: 768px) {
+    .medicines-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .container {
+      padding: 15px;
+    }
+    
+    .mui-panel {
+      padding: 20px !important;
+    }
+  }
+  
+  /* Additional styled for _medicine.html.erb partial */
+  .medicine-title {
+    color: #424242;
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  
+  .medicine-detail {
+    display: flex;
+    margin-bottom: 6px;
+    color: #616161;
+  }
+  
+  .medicine-label {
+    font-weight: 500;
+    width: 100px;
+    flex-shrink: 0;
+  }
+  
+  .medicine-value {
+    color: #757575;
+  }
+  
+  .prescribed-badge {
+    display: inline-block;
+    background-color: #ff9800;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 5px;
+  }
+</style>

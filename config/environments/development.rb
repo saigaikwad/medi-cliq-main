@@ -71,8 +71,10 @@ config.action_mailer.smtp_settings = {
   domain: "gmail.com",
   user_name: "saigaikwad936@gmail.com",
   password: "cchr ywwk ggxh xtcl", # Use the 16-character App Password
+  tls_version: "TLSv1_2",
   authentication: "plain",
-  enable_starttls_auto: true
+  enable_starttls_auto: true,
+  
 }
 config.action_mailer.default_url_options = { host: "localhost", port: 3000 }
 

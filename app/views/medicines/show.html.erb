@@ -1,10 +1,141 @@
-<p style="color: green"><%= notice %></p>
+<div class="container" style="max-width: 900px; margin: 0 auto; padding: 20px;">
+  <% if notice %>
+    <div class="mui-panel mui--bg-primary" style="padding: 15px; border-radius: 6px; margin-bottom: 20px; background-color: #c8e6c9;">
+      <p style="color: #2e7d32; margin: 0; font-size: 16px;"><%= notice %></p>
+    </div>
+  <% end %>
 
-<%= render @medicine %>
+  <div class="mui-panel" style="padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); background-color: white; margin-bottom: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 25px;">
+      <h1 style="color: #3f51b5; font-weight: 500; margin: 0; font-size: 28px;"><%= @medicine.name %></h1>
+      <% if @medicine.prescribed %>
+        <div style="background-color: #ff9800; color: white; padding: 6px 12px; border-radius: 4px; font-weight: 500; display: flex; align-items: center;">
+          <i class="material-icons" style="font-size: 18px; margin-right: 5px;">assignment_late</i>
+          Prescription Required
+        </div>
+      <% end %>
+    </div>
 
-<div>
-  <%= link_to "Edit this medicine", edit_medicine_path(@medicine) %> |
-  <%= link_to "Back to medicines", medicines_path %>
+    <div class="medicine-details" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+      <div class="detail-card" style="background-color: #f5f7ff; padding: 20px; border-radius: 6px;">
+        <h3 style="margin-top: 0; color: #424242; font-size: 18px; display: flex; align-items: center;">
+          <i class="material-icons" style="color: #3f51b5; margin-right: 8px;">medical_services</i>
+          Basic Information
+        </h3>
+        <div style="margin-bottom: 12px;">
+          <div style="color: #757575; font-size: 14px;">Name</div>
+          <div style="color: #212121; font-size: 16px; font-weight: 500;"><%= @medicine.name %></div>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <div style="color: #757575; font-size: 14px;">Form</div>
+          <div style="color: #212121; font-size: 16px;"><%= @medicine.form %></div>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <div style="color: #757575; font-size: 14px;">Category</div>
+          <div style="color: #212121; font-size: 16px;"><%= @medicine.category.name %></div>
+        </div>
+      </div>
 
-  <%= button_to "Destroy this medicine", @medicine, method: :delete %>
+      <div class="detail-card" style="background-color: #f5f7ff; padding: 20px; border-radius: 6px;">
+        <h3 style="margin-top: 0; color: #424242; font-size: 18px; display: flex; align-items: center;">
+          <i class="material-icons" style="color: #3f51b5; margin-right: 8px;">business</i>
+          Manufacturer Details
+        </h3>
+        <div style="margin-bottom: 12px;">
+          <div style="color: #757575; font-size: 14px;">Manufacturer</div>
+          <div style="color: #212121; font-size: 16px;"><%= @medicine.manufacturer %></div>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <div style="color: #757575; font-size: 14px;">Batch No</div>
+          <div style="color: #212121; font-size: 16px;"><%= @medicine.batch_no %></div>
+        </div>
+        <div style="margin-bottom: 12px;">
+          <div style="color: #757575; font-size: 14px;">Expiration Date</div>
+          <div style="color: #212121; font-size: 16px;">
+            <%= @medicine.exp_date %>
+            <% if @medicine.exp_date && @medicine.exp_date < Date.today %>
+              <span style="color: #f44336; font-size: 14px; margin-left: 8px;">(Expired)</span>
+            <% elsif @medicine.exp_date && @medicine.exp_date < Date.today + 30.days %>
+              <span style="color: #ff9800; font-size: 14px; margin-left: 8px;">(Expiring soon)</span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mui-panel" style="padding: 20px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 6px rgba(0,0,0,0.08);">
+    <div>
+      <%= link_to medicines_path, class: "mui-btn mui-btn--flat", style: "display: inline-flex; align-items: center; color: #616161;" do %>
+        <i class="material-icons" style="margin-right: 5px;">arrow_back</i> Back to Medicines
+      <% end %>
+    </div>
+    <div style="display: flex; gap: 10px;">
+      <%= link_to edit_medicine_path(@medicine), class: "mui-btn mui-btn--raised" do %>
+        <i class="material-icons" style="margin-right: 5px;">edit</i> Edit
+      <% end %>
+      
+      <%= button_to @medicine, method: :delete, class: "mui-btn mui-btn--raised mui-btn--danger", style: "background-color: #f44336; color: white; display: inline-flex; align-items: center;", data: { confirm: "Are you sure you want to delete this medicine?" } do %>
+        <i class="material-icons" style="margin-right: 5px;">delete</i> Delete
+      <% end %>
+    </div>
+  </div>
 </div>
+
+<!-- Add Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet">
+
+<!-- Add custom responsive styles -->
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+  }
+  
+  .mui-btn {
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.3s ease;
+  }
+  
+  .mui-btn--raised {
+    box-shadow: 0 2px 5px rgba(0,0,0,0.16), 0 2px 5px rgba(0,0,0,0.23);
+  }
+  
+  .mui-btn--raised:hover {
+    box-shadow: 0 3px 8px rgba(0,0,0,0.2), 0 3px 8px rgba(0,0,0,0.28);
+  }
+  
+  .detail-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .detail-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  @media (max-width: 768px) {
+    .medicine-details {
+      grid-template-columns: 1fr;
+    }
+    
+    .container {
+      padding: 15px;
+    }
+    
+    .mui-panel {
+      padding: 20px !important;
+    }
+    
+    h1 {
+      font-size: 24px !important;
+    }
+  }
+</style>
