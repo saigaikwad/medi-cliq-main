@@ -1,8 +1,7 @@
 class AppointmentsController < ApplicationController
   before_action :authenticate_patient!, only: [:new, :create]
   before_action :authenticate_doctor!, only: [:index, :update]
-  before_action :set_appointment, only: [:show, :confirm, :cancel, :start_video_call] # Ensure it runs for `start_video_call`
-
+  before_action :set_appointment, only: [:show, :confirm, :cancel, :start_video_call] 
 
   def new
     @appointment = Appointment.new
@@ -27,7 +26,6 @@ class AppointmentsController < ApplicationController
     else
       redirect_to root_path, alert: "Access denied."
     end
-  
   end
 
   def update
@@ -40,18 +38,14 @@ class AppointmentsController < ApplicationController
     end
   end
 
-  
-
   def show
-    @appointment = Appointment.find(params[:id])
   end
-  
+
   def confirm
-    @appointment = Appointment.find(params[:id])
     if @appointment.update(status: "confirmed")
       respond_to do |format|
         format.html { redirect_to appointments_path, notice: "Appointment confirmed successfully." }
-        format.js   # This will render confirm.js.erb
+        format.js
       end
     else
       redirect_to appointments_path, alert: "Failed to update appointment."
@@ -59,7 +53,6 @@ class AppointmentsController < ApplicationController
   end
 
   def cancel
-    @appointment = Appointment.find(params[:id])
     if @appointment.update(status: "cancelled")
       respond_to do |format|
         format.html { redirect_to appointments_path, notice: "Appointment cancelled." }
@@ -71,32 +64,35 @@ class AppointmentsController < ApplicationController
   end
 
   def start_video_call
+    Rails.logger.debug "Start Video Call Params ID: #{params[:id]}"
+  
     @appointment = Appointment.find_by(id: params[:id])
-    
+  
     if @appointment
+      Rails.logger.debug "Appointment Found: #{@appointment.inspect}"
       @room_name = "video_call_#{@appointment.id}"
     else
+      Rails.logger.debug "Appointment Not Found for ID: #{params[:id]}"
       redirect_to appointments_path, alert: "Appointment not found."
     end
   end
   
-  private
 
+  private
   def set_appointment
+    Rails.logger.debug "Params ID: #{params[:id]}"  # Logs the ID received
+  
     @appointment = Appointment.find_by(id: params[:id])
-    unless @appointment
+  
+    if @appointment.nil?
+      Rails.logger.debug "Appointment not found for ID: #{params[:id]}"
       flash[:alert] = "Appointment not found."
       redirect_to appointments_path
     end
   end
   
 
-  private
-
   def appointment_params
     params.require(:appointment).permit(:doctor_id, :date)
   end
-
-
- 
 end

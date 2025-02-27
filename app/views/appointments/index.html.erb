@@ -2,7 +2,6 @@
 <%# Add to your application.html.erb: %>
 <%# <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" /> %>
 <%# <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" /> %>
-
 <div class="appointments-container">
   <h2 class="appointments-title">Appointments</h2>
   
@@ -56,10 +55,11 @@
                 <% end %>
               <% end %>
               <% if appointment.status == "confirmed" %>
-                <%= link_to video_call_path(appointment), class: "btn btn-video" do %>
-                  <i class="material-icons">videocam</i> Start Video Call
-                <% end %>
-              <% end %>
+  <%= link_to video_call_path(appointment.id), method: :post, class: "btn btn-video" do %>
+    <i class="material-icons">videocam</i> Start Video Call
+  <% end %>
+<% end %>
+
             </td>
           </tr>
         <% end %>
@@ -67,7 +67,6 @@
     </table>
   </div>
 </div>
-
 <style>
   /* Material UI inspired styles */
   .appointments-container {

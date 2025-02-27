@@ -39,11 +39,14 @@ end
     member do
       patch :confirm
       patch :cancel
-      get :video_call
+      get :start_video_call
     end
   end
 
   get 'appointments/:id/video_call', to: 'appointments#start_video_call', as: 'video_call'
+
+  post 'start_video_call', to: 'appointments#start_video_call'
+
 
   resources :appointments, only: [:new, :create, :index, :update, :show]
 
