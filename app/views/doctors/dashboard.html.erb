@@ -1,50 +1,609 @@
-<!-- Hamburger Menu for Mobile -->
-<div class="hamburger" onclick="toggleSidebar()">☰</div>
+<!-- Top Navbar -->
+<header class="mui-appbar mui--z3 custom-navbar">
+  <div class="mui-container">
+    <div class="navbar-content">
+      <h2 class="mui--text-title custom-dashboard-title">Doctor Dashboard</h2>
+      <div class="navbar-actions">
+        <span class="mui--text-body2 doctor-name"><i class="mui-icon mui--text-light doctor-icon">person</i> Dr. <%= current_doctor.first_name %></span>
+      </div>
+    </div>
+  </div>
+</header>
 
 <!-- Sidebar Navigation -->
-<nav class="sidebar" id="sidebar">
-  <ul>
-    <li><%= link_to "Create Patient", new_doctor_patient_path(current_doctor) %></li>
-    <li><%= link_to "View Patients", doctor_patients_path(current_doctor) %></li>
-    <li><%= link_to "Available Medicines", medicines_path %></li>
-    <li><%= link_to "Logout", destroy_doctor_session_path, data: { turbo_method: :delete }, class: "nav-link" %></li>
+<nav id="new-sidebar" class="mui--z2 custom-new-sidebar">
+  <div class="sidebar-header">
+    <div class="doctor-avatar">
+      <i class="mui-icon doctor-avatar-icon">local_hospital</i>
+    </div>
+    <h3 class="mui--text-title doctor-dashboard">Dashboard</h3>
+  </div>
+  
+  <ul class="mui-list custom-menu">
+    <li><%= link_to doctor_patients_path(current_doctor), class: "mui-btn custom-menu-item #{'active' if controller_name == 'patients' && action_name == 'index'}" do %>
+      <i class="mui-icon menu-icon">people</i> View Patients
+    <% end %></li>
+    
+    <li><%= link_to new_doctor_patient_path(current_doctor), class: "mui-btn custom-menu-item #{'active' if controller_name == 'patients' && action_name == 'new'}" do %>
+      <i class="mui-icon menu-icon">person_add</i> Create Patient
+    <% end %></li>
+    
+    <li><%= link_to medicines_path, class: "mui-btn custom-menu-item #{'active' if controller_name == 'medicines'}" do %>
+      <i class="mui-icon menu-icon">medication</i> Available Medicines
+    <% end %></li>
+    
+    <li><%= link_to appointments_path, class: "mui-btn custom-menu-item #{'active' if controller_name == 'appointments'}" do %>
+      <i class="mui-icon menu-icon">event</i> Appointments
+    <% end %></li>
+    
+    <li class="logout-container">
+      <%= form_with url: destroy_doctor_session_path, method: :delete, local: true do %>
+        <button type="submit" class="mui-btn mui-btn--danger custom-menu-item logout">
+          <i class="mui-icon menu-icon">exit_to_app</i> Logout
+        </button>
+      <% end %>
+    </li>
   </ul>
 </nav>
 
 <!-- Main Content Area -->
-<div class="content">
-  <h1>Doctor Dashboard</h1>
+<div class="mui-container custom-main-content">
+  <div class="page-header">
+    <h2 class="mui--text-headline page-title">Appointments</h2>
+    
+  </div>
 
-  <h2>Appointments</h2>
-  <div class="table-container">
-    <table class="mui-table">
-      <thead>
-        <tr>
-          <th>Patient</th>
-          <th>Date</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% current_doctor.appointments.each do |appointment| %>
+  <div class="mui-panel custom-card-table">
+    <div class="table-responsive">
+      <table id="appointmentsTable" class="mui-table mui-table--bordered custom-table">
+        <thead>
           <tr>
-            <td><%= appointment.patient.name %></td>
-            <td><%= appointment.date.strftime("%d %b %Y, %I:%M %p") %></td>
-            <td>
-              <span class="status-label <%= appointment.status == 'confirmed' ? 'confirmed' : 'pending' %>">
-                <%= appointment.status.capitalize %>
-              </span>
-            </td>
-            <td>
-              <%= link_to "Confirm", appointment_path(appointment, status: "confirmed"), method: :patch, class: "mui-btn mui-btn--small mui-btn--primary" %>
-              <%= link_to "Cancel", appointment_path(appointment, status: "cancelled"), method: :patch, class: "mui-btn mui-btn--small mui-btn--danger" %>
-            </td>
+            <th>Patient</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Actions</th>
           </tr>
-        <% end %>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <% current_doctor.appointments.each do |appointment| %>
+            <tr>
+              <td class="patient-name">
+                <div class="patient-info">
+                  <div class="patient-avatar">
+                    <%= appointment.patient.name.first.upcase %>
+                  </div>
+                  <div class="patient-details">
+                    <span class="mui--text-body2"><%= appointment.patient.name %></span>
+                    <span class="mui--text-caption patient-id">ID: <%= appointment.patient.id %></span>
+                  </div>
+                </div>
+              </td>
+              <td><%= appointment.date.strftime("%d %b %Y") %></td>
+              <td><%= appointment.date.strftime("%I:%M %p") %></td>
+              <td>
+                <span class="badge <%= appointment.status == 'confirmed' ? 'badge-success' : 'badge-warning' %>">
+                  <%= appointment.status.capitalize %>
+                </span>
+              </td>
+              <td class="actions-column">
+                <button class="mui-btn mui-btn--small mui-btn--primary view-btn">
+                  <i class="mui-icon action-icon">visibility</i>
+                </button>
+                <button class="mui-btn mui-btn--small mui-btn--accent edit-btn">
+                  <i class="mui-icon action-icon">edit</i>
+                </button>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<script></script>
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+<!-- jQuery and DataTables JS -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+<!-- DataTables Initialization -->
+<script>
+  $(document).ready(function() {
+    $('#appointmentsTable').DataTable({
+      "paging": true,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "responsive": true,
+      "order": [[1, "asc"], [2, "asc"]],
+      "columnDefs": [
+        { "orderable": false, "targets": [4] }
+      ],
+      "language": {
+        "search": "Find appointment:",
+        "paginate": {
+          "first": "First",
+          "last": "Last",
+          "next": "Next",
+          "previous": "Previous"
+        }
+      },
+      "dom": '<"top"lf>rt<"bottom"ip>'
+    });
+    
+    // Add responsive class to DataTables wrapper
+    $('.dataTables_wrapper').addClass('mui-container-fluid');
+  });
+</script>
+
+<style>
+/* --------------------------- */
+/* Global Styles */
+/* --------------------------- */
+body {
+  font-family: 'Roboto', 'Arial', sans-serif;
+  background-color: #f5f7fa;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.mui-container-fluid {
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.mui-icon {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  vertical-align: middle;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --------------------------- */
+/* Navbar */
+/* --------------------------- */
+.custom-navbar {
+  background: linear-gradient(135deg, #3f51b5, #1a237e);
+  color: white;
+  padding: 0;
+  height: 64px;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.custom-dashboard-title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+}
+
+.doctor-name {
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.doctor-icon {
+  margin-right: 6px;
+}
+
+/* --------------------------- */
+/* Sidebar */
+/* --------------------------- */
+.custom-new-sidebar {
+  width: 260px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  background: #1a237e;
+  padding: 0;
+  box-shadow: 2px 0px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 20px 0;
+  margin-bottom: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.doctor-avatar {
+  background-color: #3f51b5;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.doctor-avatar-icon {
+  font-size: 36px;
+  color: white;
+}
+
+.doctor-dashboard {
+  color: white;
+  margin: 0;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.custom-menu {
+  list-style: none;
+  padding: 0 15px;
+  margin: 0;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-menu li {
+  margin-bottom: 8px;
+}
+
+.custom-menu-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  text-align: left;
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  border: none;
+}
+
+.custom-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  transform: translateX(5px);
+}
+
+.custom-menu-item.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.menu-icon {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.logout-container {
+  margin-top: auto;
+  margin-bottom: 20px;
+}
+
+.logout {
+  background-color: rgba(211, 47, 47, 0.8) !important;
+  color: white !important;
+}
+
+.logout:hover {
+  background-color: rgba(211, 47, 47, 1) !important;
+}
+
+/* --------------------------- */
+/* Main Content */
+/* --------------------------- */
+.custom-main-content {
+  margin-left: 260px;
+  padding: 30px;
+  padding-top: 94px; /* Account for fixed navbar */
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.page-title {
+  color: #1a237e;
+  margin: 0;
+  font-weight: 500;
+  position: relative;
+}
+
+.page-title::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 50px;
+  height: 3px;
+  background: #3f51b5;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.add-appointment-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background-color: #3f51b5;
+  color: white;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: 500;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.add-appointment-btn:hover {
+  background-color: #303f9f;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* --------------------------- */
+/* Table */
+/* --------------------------- */
+.custom-card-table {
+  padding: 0;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  margin-bottom: 30px;
+  border: none;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  min-height: 300px;
+}
+
+.custom-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+}
+
+.custom-table thead {
+  background-color: #3f51b5;
+}
+
+.custom-table th {
+  color: white;
+  padding: 15px 20px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.custom-table td {
+  padding: 15px 20px;
+  font-size: 14px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  vertical-align: middle;
+}
+
+.custom-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.custom-table tbody tr:hover {
+  background-color: rgba(63, 81, 181, 0.05);
+}
+
+.patient-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.patient-avatar {
+  width: 36px;
+  height: 36px;
+  background-color: #3f51b5;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.patient-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.patient-id {
+  color: #757575;
+  font-size: 12px;
+}
+
+/* --------------------------- */
+/* Status Badges */
+/* --------------------------- */
+.badge {
+  padding: 6px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badge-success {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: #2e7d32;
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+.badge-warning {
+  background-color: rgba(255, 152, 0, 0.1);
+  color: #ef6c00;
+  border: 1px solid rgba(255, 152, 0, 0.2);
+}
+
+/* --------------------------- */
+/* Action Buttons */
+/* --------------------------- */
+.actions-column {
+  white-space: nowrap;
+}
+
+.view-btn, .edit-btn {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-right: 5px;
+  transition: all 0.2s ease;
+}
+
+.view-btn {
+  background-color: rgba(63, 81, 181, 0.1);
+  color: #3f51b5;
+}
+
+.view-btn:hover {
+  background-color: #3f51b5;
+  color: white;
+}
+
+.edit-btn {
+  background-color: rgba(156, 39, 176, 0.1);
+  color: #9c27b0;
+}
+
+.edit-btn:hover {
+  background-color: #9c27b0;
+  color: white;
+}
+
+.action-icon {
+  font-size: 18px;
+}
+
+/* --------------------------- */
+/* DataTables Customization */
+/* --------------------------- */
+.dataTables_wrapper .dataTables_length, 
+.dataTables_wrapper .dataTables_filter {
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px 10px;
+  margin-left: 10px;
+}
+
+.dataTables_wrapper .dataTables_length select {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 10px;
+  margin: 0 10px;
+}
+
+.dataTables_wrapper .dataTables_info {
+  padding-top: 20px;
+  font-size: 14px;
+  color: #757575;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+  padding-top: 20px;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+  padding: 8px 12px;
+  margin: 0 2px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  background-color: transparent;
+  color: #3f51b5 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+  background-color: #3f51b5 !important;
+  color: white !important;
+  border-color: #3f51b5;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+  background-color: rgba(63, 81, 181, 0.1) !important;
+  color: #3f51b5 !important;
+  border-color: #ddd;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .custom-main-content {
+    margin-left: 0;
+    padding: 20px;
+    padding-top: 84px;
+  }
+  
+  .custom-new-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  
+  .custom-new-sidebar.active {
+    transform: translateX(0);
+  }
+  
+  /* Add hamburger menu button here if needed */
+}
+</style>

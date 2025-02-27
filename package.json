@@ -1,8 +1,29 @@
 {
   "dependencies": {
+    "@babel/preset-react": "^7.26.3",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/stimulus-webpack-helpers": "^1.0.1",
     "@mui/icons-material": "^6.4.5",
-    "@mui/material": "^6.4.5"
-  }
+    "@mui/material": "^6.4.5",
+    "@rails/webpacker": "5.4.4",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "prop-types": "^15.8.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "webpack": "^4.46.0",
+    "webpack-cli": "^3.3.12"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.26.9",
+    "@types/react": "^19.0.10",
+    "esbuild": "^0.25.0",
+    "webpack-dev-server": "^3"
+  },
+  "scripts": {
+    "build": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --loader:.js=jsx",
+    "watch": "esbuild app/javascript/*.* --bundle --sourcemap --format=esm --outdir=app/assets/builds --public-path=/assets --loader:.js=jsx --watch"
+  },
+  "type": "module"
 }

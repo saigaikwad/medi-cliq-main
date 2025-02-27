@@ -1,32 +1,113 @@
 <div class="mui-container login-container">
   <h2 class="mui-typography--headline">Log in</h2>
-
   <%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "mui-form" }) do |f| %>
-    
-    <div class="mui-textfield">
-      <%= f.label :email, class: "mui-textfield__label" %>
+    <div class="mui-textfield mui-textfield--float-label">
       <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mui-textfield__input" %>
+      <%= f.label :email, class: "mui-textfield__label" %>
     </div>
-
-    <div class="mui-textfield">
-      <%= f.label :password, class: "mui-textfield__label" %>
+    
+    <div class="mui-textfield mui-textfield--float-label">
       <%= f.password_field :password, autocomplete: "current-password", class: "mui-textfield__input" %>
+      <%= f.label :password, class: "mui-textfield__label" %>
     </div>
-
+    
     <% if devise_mapping.rememberable? %>
       <div class="mui-checkbox">
         <label>
           <%= f.check_box :remember_me, class: "mui-checkbox__input" %>
-          <span>Remember me</span>
+          <span class="mui-checkbox__label">Remember me</span>
         </label>
       </div>
     <% end %>
-
+    
     <div class="mui-button-container">
-      <%= f.submit "Log in", class: "mui-btn2 mui-btn--raised mui-btn--primary" %>
+      <%= f.submit "Log in", class: "mui-btn mui-btn--raised mui-btn--primary login-btn" %>
     </div>
-
   <% end %>
-
-  <%= render "doctors/shared/links" %>
+  
+  <div class="auth-links">
+    <%= render "doctors/shared/links" %>
+  </div>
 </div>
+
+<style>
+  .login-container {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+  }
+  
+  .mui-typography--headline {
+    color: #3f51b5;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-weight: 500;
+  }
+  
+  .mui-textfield {
+    margin-bottom: 1.5rem;
+  }
+  
+  .mui-textfield__input {
+    border-bottom: 2px solid #ccc;
+    transition: border-color 0.3s;
+  }
+  
+  .mui-textfield__input:focus {
+    border-color: #3f51b5;
+  }
+  
+  .mui-textfield__label {
+    color: #757575;
+  }
+  
+  .mui-checkbox {
+    margin: 1rem 0;
+  }
+  
+  .mui-checkbox__label {
+    color: #616161;
+    font-size: 0.9rem;
+  }
+  
+  .mui-button-container {
+    margin: 2rem 0 1rem;
+    text-align: center;
+  }
+  
+  .login-btn {
+    width: 100%;
+    background-color: #3f51b5;
+    color: white;
+    padding: 0.30rem;
+    text-transform: uppercase;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: background-color 0.3s;
+  }
+  
+  .login-btn:hover {
+    background-color: #303f9f;
+  }
+  
+  .auth-links {
+    margin-top: 1.5rem;
+    text-align: center;
+    font-size: 0.9rem;
+  }
+  
+  .auth-links a {
+    color: #3f51b5;
+    text-decoration: none;
+    margin: 0 0.5rem;
+    transition: color 0.3s;
+  }
+  
+  .auth-links a:hover {
+    color: #303f9f;
+    text-decoration: underline;
+  }
+</style>

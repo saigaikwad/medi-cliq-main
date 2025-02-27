@@ -4,27 +4,35 @@ class Prescription < ApplicationRecord
   belongs_to :medicine
   has_one :qr
   after_create :generate_qr_code
+  validates :doctor_id, presence: true
 
   private
 
   def generate_qr_code
-    qr_data = {
-      medicine_id: medicine.id,
-      quantity: prescription_quantity
+    prescriptions = patient.prescriptions.includes(:medicine)
+
+    qr_data = prescriptions.map do |prescription|
+      {
+        medicine_id: prescription.medicine.id,
+        medicine_name: prescription.medicine.name,
+        quantity: prescription.prescription_quantity,
+        dosage: prescription.dosage_description,
+        duration: prescription.duration
+      }
+    end
+
+    qr_code_data = {
+      patient_id: patient.id,
+      patient_name: patient.name,
+      medicines: qr_data
     }.to_json
 
-    qr_code = RQRCode::QRCode.new(qr_data).as_svg(module_size: 6)
+    qr_code_svg = RQRCode::QRCode.new(qr_code_data).as_svg(module_size: 6)
 
-    created_qr = Qr.create(prescription_id: id, qr_code: qr_code)
-
-    # Now use the created Qr record
-    qr_data = {
-      qr_id: created_qr.id,
-      medicine_id: medicine.id,
-      quantity: prescription_quantity
-    }.to_json
-
-    # Update the QR code with the proper `qr_id`
-    created_qr.update(qr_code: RQRCode::QRCode.new(qr_data).as_svg(module_size: 6))
+    if qr.present?
+      qr.update(qr_code: qr_code_svg)
+    else
+      Qr.create(prescription_id: id, qr_code: qr_code_svg)
+    end
   end
 end

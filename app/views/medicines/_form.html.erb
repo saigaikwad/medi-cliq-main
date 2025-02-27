@@ -1,59 +1,71 @@
-<%= form_with(model: medicine) do |form| %>
-  <% if medicine.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(medicine.errors.count, "error") %> prohibited this medicine from being saved:</h2>
+<%= form_with(model: medicine, class: "container d-flex justify-content-center mt-4", data: { turbo: false }) do |form| %>
+  <div class="mui-panel" style="max-width: 600px; width: 100%; padding: 20px; box-shadow: 0px 4px 10px rgba(0,0,0,0.2); border-radius: 10px; background-color: white;">
+    <h3 class="text-center mb-3">Add New Medicine</h3>
 
-      <ul>
-        <% medicine.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div>
-    <%= form.label :exp_date, style: "display: block" %>
-    <%= form.date_field :exp_date %>
-  </div>
-
-  <div>
-    <%= form.label :form, style: "display: block" %>
-    <%= form.text_field :form %>
-  </div>
-
-  <div>
-    <%= form.label :manufacturer, style: "display: block" %>
-    <%= form.text_field :manufacturer %>
-  </div>
-
+    <% if medicine.errors.any? %>
+      <div class="alert alert-danger p-3 mb-3 rounded">
+        <h5><%= pluralize(medicine.errors.count, "error") %> prohibited this medicine from being saved:</h5>
+        <ul class="mb-0">
+          <% medicine.errors.each do |error| %>
+            <li><%= error.full_message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
 
     <div class="mb-3">
-      <%= form.label :category_id_id, "Category" %>
-      <%= form.collection_select :category_id, Category.all, :id, :name, { prompt: "Select Category" }, class: "form-control" %>
+      <%= form.label :name, class: "form-label fw-bold" %>
+      <%= form.text_field :name, class: "form-control", placeholder: "Enter medicine name" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :exp_date, class: "form-label fw-bold" %>
+      <%= form.date_field :exp_date, class: "form-control" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :form, class: "form-label fw-bold" %>
+      <%= form.text_field :form, class: "form-control", placeholder: "Tablet, Syrup, etc." %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :manufacturer, class: "form-label fw-bold" %>
+      <%= form.text_field :manufacturer, class: "form-control", placeholder: "Enter manufacturer name" %>
+    </div>
+
+     <div class="mb-3">
+      <%= form.label :price, class: "form-label fw-bold" %>
+      <%= form.text_field :price, class: "form-control", placeholder: "enter price" %>
+    </div>
+
+    <div class="mui-grid-item">
+      <%= form.label :category_id, "Category", class: "mui-label" %>
+      <%= form.collection_select :category_id, Category.all, :id, :name, { prompt: "Select Category" }, class: "mui-dropdown" %>
     </div>
 
 
-  <div>
-    <%= form.label :batch_no, style: "display: block" %>
-    <%= form.text_field :batch_no %>
-  </div>
+    
 
-   <div>
-    <%= form.label :quantity, style: "display: block" %>
-    <%= form.text_field :quantity %>
-  </div>
 
-  <div>
-    <%= form.label :prescribed, style: "display: block" %>
-    <%= form.check_box :prescribed %>
-  </div>
+    
 
-  <div>
-    <%= form.submit %>
+    <div class="mb-3">
+      <%= form.label :batch_no, class: "form-label fw-bold" %>
+      <%= form.text_field :batch_no, class: "form-control", placeholder: "Enter batch number" %>
+    </div>
+
+    <div class="mb-3">
+      <%= form.label :quantity, class: "form-label fw-bold" %>
+      <%= form.number_field :quantity, class: "form-control", placeholder: "Enter quantity" %>
+    </div>
+
+    <div class="form-check mb-3">
+      <%= form.check_box :prescribed, class: "form-check-input" %>
+      <%= form.label :prescribed, "Requires Prescription", class: "form-check-label" %>
+    </div>
+
+    <div class="text-center mt-3">
+      <button type="submit" class="mui-btn mui-btn--primary w-100">Save Medicine</button>
+    </div>
   </div>
 <% end %>

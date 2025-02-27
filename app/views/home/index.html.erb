@@ -1,11 +1,223 @@
-<div class="mui-container">
-  <div class="hero">
-    <h1>Welcome to Medi-Cliq</h1>
-    <p>Your trusted platform for online medical consultations. Please log in to continue.</p>
-  </div>
+<%# Make sure to include the Material UI dependencies in your application %>
+<%# Add to your application.html.erb: %>
+<%# <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" /> %>
+<%# <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" /> %>
 
-  <div class="button-group">
-    <%= link_to "👨‍⚕️ Patient Login", new_patient_session_path, class: "mui-btn mui-btn--raised mui-btn--primary" %>
-    <%= link_to "🩺 Doctor Login", new_doctor_session_path, class: "mui-btn mui-btn--raised mui-btn--error" %>
+<div class="welcome-container">
+  <div class="welcome-card">
+    <div class="hero-section">
+      <div class="logo-container">
+        <i class="material-icons logo-icon">Medi-Cliq</i>
+       
+      </div>
+      <h2 class="welcome-title">Healthcare at Your Fingertips</h2>
+      <p class="welcome-subtitle">Your trusted platform for online medical consultations. Connect with healthcare professionals from anywhere, anytime.</p>
+    </div>
+    
+ 
+    
+    <div class="login-section">
+      <h3 class="login-heading">Please log in to continue</h3>
+      <div class="button-group">
+        <%= link_to new_patient_session_path, class: "login-button patient-login" do %>
+          <i class="material-icons"></i>
+          <span>Patient Login</span>
+        <% end %>
+        
+        <%= link_to new_doctor_session_path, class: "login-button doctor-login" do %>
+          <i class="material-icons"></i>
+          <span>Doctor Login</span>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>
+
+<style>
+  /* Material UI inspired styles */
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+    color: rgba(0, 0, 0, 0.87);
+  }
+  
+  .welcome-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  
+  .welcome-card {
+    width: 100%;
+    max-width: 1000px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    overflow: hidden;
+  }
+  
+  .hero-section {
+    background: linear-gradient(135deg, #3f51b5 0%, #2196f3 100%);
+    color: white;
+    padding: 48px 24px;
+    text-align: center;
+  }
+  
+  .logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 24px;
+  }
+  
+  .logo-icon {
+    font-size: 36px;
+    margin-right: 12px;
+    background-color: white;
+    color: #3f51b5;
+    border-radius: 50%;
+    padding: 8px;
+  }
+  
+  .app-title {
+    font-size: 32px;
+    font-weight: 500;
+    margin: 0;
+  }
+  
+  .welcome-title {
+    font-size: 24px;
+    font-weight: 400;
+    margin-bottom: 16px;
+  }
+  
+  .welcome-subtitle {
+    font-size: 16px;
+    font-weight: 300;
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+  
+  .features-section {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 48px 24px;
+    background-color: #fafafa;
+  }
+  
+  .feature-item {
+    flex: 1;
+    min-width: 200px;
+    text-align: center;
+    padding: 16px;
+    margin: 8px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+  }
+  
+  .feature-item:hover {
+    background-color: #f5f5f5;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+  
+  .feature-icon {
+    font-size: 36px;
+    color: #3f51b5;
+    margin-bottom: 16px;
+  }
+  
+  .feature-item h3 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: rgba(0, 0, 0, 0.87);
+  }
+  
+  .feature-item p {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+    line-height: 1.4;
+  }
+  
+  .login-section {
+    padding: 48px 24px;
+    text-align: center;
+  }
+  
+  .login-heading {
+    font-size: 20px;
+    font-weight: 400;
+    margin-bottom: 24px;
+    color: rgba(0, 0, 0, 0.87);
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+  
+  .login-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    min-width: 180px;
+  }
+  
+  .login-button:hover {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    transform: translateY(-2px);
+  }
+  
+  .login-button i {
+    margin-right: 12px;
+  }
+  
+  .patient-login {
+    background-color: #2196f3;
+    color: white;
+  }
+  
+  .doctor-login {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .features-section {
+      flex-direction: column;
+    }
+    
+    .feature-item {
+      margin-bottom: 16px;
+    }
+    
+    .button-group {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .login-button {
+      width: 100%;
+      max-width: 280px;
+    }
+  }
+</style>

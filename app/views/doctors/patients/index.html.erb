@@ -1,22 +1,476 @@
-<h1>My Patients</h1>
+<div class="patients-dashboard">
+  <div class="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded header-container">
+    <h1 class="MuiTypography-root MuiTypography-h4">My Patients</h1>
+    
+    <div class="filter-section">
+      <div class="MuiFormControl-root search-field">
+        <label class="MuiFormLabel-root MuiInputLabel-root">Search Patients</label>
+        <input type="text" id="patientSearch" class="MuiInputBase-input MuiOutlinedInput-input" placeholder="Search by name..." />
+      </div>
+      
+      <div class="MuiFormControl-root filter-field">
+        <label class="MuiFormLabel-root MuiInputLabel-root">Filter by Gender</label>
+        <select id="genderFilter" class="MuiInputBase-input MuiOutlinedInput-input MuiSelect-root">
+          <option value="">All Genders</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      
+      <div class="MuiFormControl-root filter-field">
+        <label class="MuiFormLabel-root MuiInputLabel-root">Age Range</label>
+        <select id="ageFilter" class="MuiInputBase-input MuiOutlinedInput-input MuiSelect-root">
+          <option value="">All Ages</option>
+          <option value="0-18">0-18</option>
+          <option value="19-35">19-35</option>
+          <option value="36-60">36-60</option>
+          <option value="60+">60+</option>
+        </select>
+      </div>
+    </div>
+  </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Age</th>
-      <th>Gender</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% @patients.each do |patient| %>
-      <tr>
-        <td><%= patient.name %></td>
-        <td><%= patient.age %></td>
-        <td><%= patient.gender %></td>
-        <td><%= link_to "View", doctor_patients_path(current_doctor, patient) %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+  <div class="MuiPaper-root MuiPaper-elevation1 MuiPaper-rounded table-container">
+    <table class="MuiTable-root patients-table" id="patientsTable">
+      <thead class="MuiTableHead-root">
+        <tr class="MuiTableRow-root MuiTableRow-head">
+          <th class="MuiTableCell-root MuiTableCell-head sortable" data-sort="name">
+            <div class="table-header">
+              Name
+              <span class="sort-icon">▼</span>
+            </div>
+          </th>
+          <th class="MuiTableCell-root MuiTableCell-head sortable" data-sort="age">
+            <div class="table-header">
+              Age
+              <span class="sort-icon">▼</span>
+            </div>
+          </th>
+          <th class="MuiTableCell-root MuiTableCell-head sortable" data-sort="gender">
+            <div class="table-header">
+              Gender
+              <span class="sort-icon">▼</span>
+            </div>
+          </th>
+          <th class="MuiTableCell-root MuiTableCell-head">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="MuiTableBody-root">
+        <% @patients.each do |patient| %>
+          <tr class="MuiTableRow-root patient-row" 
+              data-name="<%= patient.name.downcase %>" 
+              data-age="<%= patient.age %>" 
+              data-gender="<%= patient.gender.downcase %>">
+            <td class="MuiTableCell-root MuiTableCell-body"><%= patient.name %></td>
+            <td class="MuiTableCell-root MuiTableCell-body"><%= patient.age %></td>
+            <td class="MuiTableCell-root MuiTableCell-body"><%= patient.gender %></td>
+            <td class="MuiTableCell-root MuiTableCell-body actions-cell">
+              <%= link_to doctor_patients_path(current_doctor, patient), class: "MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary view-button" do %>
+                <span class="MuiButton-label">View</span>
+              <% end %>
+              
+             
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+    
+    <div id="noResults" class="no-results MuiTypography-root MuiTypography-body1" style="display: none;">
+      No patients match your search criteria.
+    </div>
+    
+    <div class="pagination-container">
+      <button class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary pagination-button" id="prevPage" disabled>
+        <span class="MuiButton-label">Previous</span>
+      </button>
+      <span class="MuiTypography-root MuiTypography-body1 page-indicator">Page <span id="currentPage">1</span> of <span id="totalPages">1</span></span>
+      <button class="MuiButtonBase-root MuiButton-root MuiButton-text MuiButton-textPrimary pagination-button" id="nextPage" disabled>
+        <span class="MuiButton-label">Next</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Material UI inspired styles */
+  .patients-dashboard {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 24px;
+  }
+  
+  .header-container {
+    padding: 24px;
+    margin-bottom: 24px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #fff;
+  }
+  
+  .header-container h1 {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: #3f51b5;
+    font-weight: 500;
+  }
+  
+  .filter-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  
+  .MuiFormControl-root {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .MuiFormLabel-root {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 6px;
+    display: block;
+  }
+  
+  .MuiInputBase-input,
+  .MuiOutlinedInput-input,
+  .MuiSelect-root {
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.2s;
+    width: 100%;
+    background-color: #fff;
+  }
+  
+  .MuiInputBase-input:focus,
+  .MuiOutlinedInput-input:focus,
+  .MuiSelect-root:focus {
+    outline: none;
+    border-color: #3f51b5;
+    box-shadow: 0 0 0 1px rgba(63, 81, 181, 0.25);
+  }
+  
+  .table-container {
+    padding: 16px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background-color: #fff;
+    overflow: hidden;
+  }
+  
+  .patients-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .MuiTableCell-root {
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .MuiTableCell-head {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.87);
+    background-color: #f5f5f5;
+  }
+  
+  .sortable {
+    cursor: pointer;
+  }
+  
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .sort-icon {
+    opacity: 0.3;
+    transition: opacity 0.2s;
+  }
+  
+  .sortable:hover .sort-icon {
+    opacity: 1;
+  }
+  
+  .sorting-asc .sort-icon {
+    opacity: 1;
+    transform: rotate(180deg);
+  }
+  
+  .sorting-desc .sort-icon {
+    opacity: 1;
+  }
+  
+  .patient-row:hover {
+    background-color: rgba(63, 81, 181, 0.04);
+  }
+  
+  .actions-cell {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .MuiButtonBase-root.MuiButton-root {
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    transition: background-color 0.2s;
+    text-decoration: none;
+  }
+  
+  .MuiButton-outlinedPrimary {
+    color: #3f51b5;
+    border: 1px solid rgba(63, 81, 181, 0.5);
+  }
+  
+  .MuiButton-outlinedPrimary:hover {
+    background-color: rgba(63, 81, 181, 0.04);
+    border-color: #3f51b5;
+  }
+  
+  .edit-button {
+    color: #ff9800;
+    border: 1px solid rgba(255, 152, 0, 0.5);
+  }
+  
+  .edit-button:hover {
+    background-color: rgba(255, 152, 0, 0.04);
+    border-color: #ff9800;
+  }
+  
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px 0;
+    gap: 16px;
+  }
+  
+  .page-indicator {
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  .pagination-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  
+  .no-results {
+    text-align: center;
+    padding: 32px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+  
+  /* Hide filtered out rows */
+  .patient-row.filtered-out {
+    display: none;
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Table sorting functionality
+    const table = document.getElementById('patientsTable');
+    const headers = table.querySelectorAll('th.sortable');
+    let currentSort = { column: 'name', direction: 'asc' };
+    
+    // Pagination variables
+    const rowsPerPage = 10;
+    let currentPage = 1;
+    let filteredRows = [];
+    
+    // Initial setup
+    initializeTable();
+    setupSorting();
+    setupFiltering();
+    
+    function initializeTable() {
+      // Get all rows and make them visible by default
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      filteredRows = rows; // Set initial filtered rows to all rows
+      
+      // Initialize pagination based on all rows
+      updatePagination();
+      displayCurrentPage();
+      
+      // Set up pagination navigation
+      document.getElementById('prevPage').addEventListener('click', () => {
+        if (currentPage > 1) {
+          currentPage--;
+          displayCurrentPage();
+          updatePaginationControls();
+        }
+      });
+      
+      document.getElementById('nextPage').addEventListener('click', () => {
+        const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+        if (currentPage < totalPages) {
+          currentPage++;
+          displayCurrentPage();
+          updatePaginationControls();
+        }
+      });
+    }
+    
+    function setupSorting() {
+      headers.forEach(header => {
+        header.addEventListener('click', function() {
+          const column = this.getAttribute('data-sort');
+          const direction = (currentSort.column === column && currentSort.direction === 'asc') ? 'desc' : 'asc';
+          
+          // Reset all headers
+          headers.forEach(h => {
+            h.classList.remove('sorting-asc', 'sorting-desc');
+          });
+          
+          // Update current header
+          this.classList.add(direction === 'asc' ? 'sorting-asc' : 'sorting-desc');
+          
+          currentSort = { column, direction };
+          sortTable(column, direction);
+        });
+      });
+      
+      // Set initial sort
+      const nameHeader = document.querySelector('th[data-sort="name"]');
+      nameHeader.classList.add('sorting-asc');
+      sortTable('name', 'asc');
+    }
+    
+    function sortTable(column, direction) {
+      const tbody = table.querySelector('tbody');
+      const rows = Array.from(tbody.querySelectorAll('tr'));
+      
+      // Sort rows but don't modify visibility
+      const sortedRows = rows.sort((a, b) => {
+        const aValue = a.getAttribute(`data-${column}`);
+        const bValue = b.getAttribute(`data-${column}`);
+        
+        if (column === 'age') {
+          return direction === 'asc' 
+            ? parseInt(aValue) - parseInt(bValue)
+            : parseInt(bValue) - parseInt(aValue);
+        } else {
+          return direction === 'asc' 
+            ? aValue.localeCompare(bValue)
+            : bValue.localeCompare(aValue);
+        }
+      });
+      
+      // Clear table body
+      while (tbody.firstChild) {
+        tbody.removeChild(tbody.firstChild);
+      }
+      
+      // Add all sorted rows back to DOM
+      sortedRows.forEach(row => {
+        tbody.appendChild(row);
+      });
+      
+      // Update filtered rows collection (keeping filter status)
+      filteredRows = sortedRows.filter(row => !row.classList.contains('filtered-out'));
+      updatePagination();
+      displayCurrentPage();
+    }
+    
+    function setupFiltering() {
+      const searchInput = document.getElementById('patientSearch');
+      const genderFilter = document.getElementById('genderFilter');
+      const ageFilter = document.getElementById('ageFilter');
+      
+      // Add event listeners
+      searchInput.addEventListener('input', applyFilters);
+      genderFilter.addEventListener('change', applyFilters);
+      ageFilter.addEventListener('change', applyFilters);
+    }
+    
+    function applyFilters() {
+      const searchTerm = document.getElementById('patientSearch').value.toLowerCase();
+      const genderValue = document.getElementById('genderFilter').value;
+      const ageRange = document.getElementById('ageFilter').value;
+      
+      const rows = table.querySelectorAll('tbody tr');
+      let hasVisibleRows = false;
+      
+      rows.forEach(row => {
+        const name = row.getAttribute('data-name');
+        const gender = row.getAttribute('data-gender');
+        const age = parseInt(row.getAttribute('data-age'));
+        let ageMatch = true;
+        
+        // Apply age range filter
+        if (ageRange) {
+          if (ageRange === '0-18') {
+            ageMatch = age >= 0 && age <= 18;
+          } else if (ageRange === '19-35') {
+            ageMatch = age >= 19 && age <= 35;
+          } else if (ageRange === '36-60') {
+            ageMatch = age >= 36 && age <= 60;
+          } else if (ageRange === '60+') {
+            ageMatch = age > 60;
+          }
+        }
+        
+        // Apply all filters
+        const nameMatch = name.includes(searchTerm);
+        const genderMatch = !genderValue || gender === genderValue;
+        
+        if (nameMatch && genderMatch && ageMatch) {
+          row.classList.remove('filtered-out');
+          hasVisibleRows = true;
+        } else {
+          row.classList.add('filtered-out');
+        }
+      });
+      
+      // Show/hide no results message
+      document.getElementById('noResults').style.display = hasVisibleRows ? 'none' : 'block';
+      
+      // Update filtered rows
+      filteredRows = Array.from(rows).filter(row => !row.classList.contains('filtered-out'));
+      
+      // Reset pagination when filters change
+      currentPage = 1;
+      updatePagination();
+      displayCurrentPage();
+    }
+    
+    function updatePagination() {
+      const totalPages = Math.max(1, Math.ceil(filteredRows.length / rowsPerPage));
+      document.getElementById('totalPages').textContent = totalPages;
+      document.getElementById('currentPage').textContent = currentPage;
+      updatePaginationControls();
+    }
+    
+    function updatePaginationControls() {
+      const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+      document.getElementById('prevPage').disabled = currentPage <= 1;
+      document.getElementById('nextPage').disabled = currentPage >= totalPages || totalPages <= 1;
+    }
+    
+    function displayCurrentPage() {
+      const startIdx = (currentPage - 1) * rowsPerPage;
+      const endIdx = startIdx + rowsPerPage;
+      
+      // First make all filtered rows visible
+      filteredRows.forEach(row => {
+        row.style.display = '';
+      });
+      
+      // Then hide rows that aren't on the current page
+      filteredRows.forEach((row, index) => {
+        if (index < startIdx || index >= endIdx) {
+          row.style.display = 'none';
+        }
+      });
+    }
+  });
+</script>

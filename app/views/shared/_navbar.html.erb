@@ -1,0 +1,37 @@
+<%= javascript_include_tag "https://unpkg.com/@mui/material@latest/umd/material-ui.development.js", defer: true %>
+
+<div id="navbar-root"></div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const { AppBar, Toolbar, Typography, IconButton, Button } = MaterialUI;
+
+    function Navbar() {
+      return React.createElement(
+        AppBar,
+        { position: "fixed", color: "primary" },
+        React.createElement(
+          Toolbar,
+          null,
+          React.createElement(
+            IconButton,
+            { edge: "start", color: "inherit", "aria-label": "menu", onClick: toggleSidebar },
+            "☰"
+          ),
+          React.createElement(Typography, { variant: "h6", sx: { flexGrow: 1 } }, "Doctor Dashboard"),
+          React.createElement(
+            Button,
+            { color: "inherit", onClick: () => window.location.href = "<%= destroy_doctor_session_path %>" },
+            "Logout"
+          )
+        )
+      );
+    }
+
+    ReactDOM.render(React.createElement(Navbar), document.getElementById("navbar-root"));
+  });
+
+  function toggleSidebar() {
+    alert("Sidebar toggle functionality here!");
+  }
+</script>

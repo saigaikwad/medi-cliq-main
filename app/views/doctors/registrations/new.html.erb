@@ -1,58 +1,315 @@
-<div class="mui-container signup-container">
-  <h2 class="mui-typography--headline">Sign Up</h2>
+<%# Make sure to include the Material UI dependencies in your application %>
+<%# Add to your application.html.erb: %>
+<%# <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" /> %>
+<%# <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" /> %>
 
-  <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "mui-form" }) do |f| %>
-
-    <%= render "doctors/shared/error_messages", resource: resource %>
-
-    <div class="mui-textfield">
-      <%= f.label :first_name, class: "mui-textfield__label" %>
-      <%= f.text_field :first_name, required: true, class: "mui-textfield__input" %>
+<div class="signup-page">
+  <div class="signup-card">
+    <div class="signup-header">
+      <i class="material-icons header-icon">Medi-Cliq</i>
+      <h2 class="signup-title">Doctor Registration</h2>
+      <p class="signup-subtitle">Join our network of healthcare professionals</p>
     </div>
 
-    <div class="mui-textfield">
-      <%= f.label :last_name, class: "mui-textfield__label" %>
-      <%= f.text_field :last_name, required: true, class: "mui-textfield__input" %>
+    <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "signup-form" }) do |f| %>
+      <%= render "doctors/shared/error_messages", resource: resource %>
+      
+      <div class="form-section">
+        <h3 class="section-title">Personal Information</h3>
+        
+        <div class="form-row">
+          <div class="form-field">
+            <div class="field-icon">
+              <i class="material-icons"></i>
+            </div>
+            <%= f.text_field :first_name, required: true, placeholder: "First Name", class: "material-input" %>
+          </div>
+          
+          <div class="form-field">
+            <%= f.text_field :last_name, required: true, placeholder: "Last Name", class: "material-input" %>
+          </div>
+        </div>
+        
+        <div class="form-field">
+          <div class="field-icon">
+            <i class="material-icons"></i>
+          </div>
+          <%= f.text_field :phone_number, required: true, placeholder: "Phone Number", class: "material-input" %>
+        </div>
+        
+        <div class="form-field">
+          <div class="field-icon">
+            <i class="material-icons"></i>
+          </div>
+          <%= f.email_field :email, autofocus: true, autocomplete: "email", placeholder: "Email Address", class: "material-input" %>
+        </div>
+      </div>
+      
+      <div class="form-section">
+        <h3 class="section-title">Professional Details</h3>
+        
+        <div class="form-field">
+          <div class="field-icon">
+            <i class="material-icons"></i>
+          </div>
+          <%= f.text_field :license_no, required: true, placeholder: "Medical License Number", class: "material-input" %>
+        </div>
+        
+        <div class="form-field">
+          <div class="field-icon">
+            <i class="material-icons"></i>
+          </div>
+          <%= f.text_field :education, required: true, placeholder: "Education & Qualifications", class: "material-input" %>
+        </div>
+      </div>
+      
+      <div class="form-section">
+        <h3 class="section-title">Account Security</h3>
+        
+        <div class="form-field">
+          <div class="field-icon">
+            <i class="material-icons"></i>
+          </div>
+          <%= f.password_field :password, autocomplete: "new-password", placeholder: "Password", class: "material-input" %>
+          <% if @minimum_password_length %>
+            <div class="field-helper">Password must be at least <%= @minimum_password_length %> characters</div>
+          <% end %>
+        </div>
+        
+        <div class="form-field">
+          <div class="field-icon">
+            <i class="material-icons"></i>
+          </div>
+          <%= f.password_field :password_confirmation, autocomplete: "new-password", placeholder: "Confirm Password", class: "material-input" %>
+        </div>
+      </div>
+      
+      <div class="form-actions">
+        <%= f.submit "Create Account", class: "submit-button" %>
+      </div>
+    <% end %>
+    
+    <div class="login-links">
+      <%= render "doctors/shared/links" %>
     </div>
-
-    <div class="mui-textfield">
-      <%= f.label :license_no, "License Number", class: "mui-textfield__label" %>
-      <%= f.text_field :license_no, required: true, class: "mui-textfield__input" %>
-    </div>
-
-    <div class="mui-textfield">
-      <%= f.label :phone_number, class: "mui-textfield__label" %>
-      <%= f.text_field :phone_number, required: true, class: "mui-textfield__input" %>
-    </div>
-
-    <div class="mui-textfield">
-      <%= f.label :education, class: "mui-textfield__label" %>
-      <%= f.text_field :education, required: true, class: "mui-textfield__input" %>
-    </div>
-
-    <div class="mui-textfield">
-      <%= f.label :email, class: "mui-textfield__label" %>
-      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "mui-textfield__input" %>
-    </div>
-
-    <div class="mui-textfield">
-      <%= f.label :password, class: "mui-textfield__label" %>
-      <% if @minimum_password_length %>
-        <em class="password-hint">(<%= @minimum_password_length %> characters minimum)</em>
-      <% end %>
-      <%= f.password_field :password, autocomplete: "new-password", class: "mui-textfield__input" %>
-    </div>
-
-    <div class="mui-textfield">
-      <%= f.label :password_confirmation, class: "mui-textfield__label" %>
-      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "mui-textfield__input" %>
-    </div>
-
-    <div class="mui-button-container">
-      <%= f.submit "Sign Up", class: "mui-btn3 mui-btn--raised mui-btn--primary" %>
-    </div>
-
-  <% end %>
-
-  <%= render "doctors/shared/links" %>
+  </div>
 </div>
+
+<style>
+  /* Material UI inspired styles */
+  body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+    color: rgba(0, 0, 0, 0.87);
+  }
+  
+  .signup-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  
+  .signup-card {
+    width: 100%;
+    max-width: 600px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    overflow: hidden;
+  }
+  
+  .signup-header {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    color: white;
+    padding: 24px;
+    text-align: center;
+  }
+  
+  .header-icon {
+    font-size: 48px;
+    background-color: white;
+    color: #1976d2;
+    padding: 12px;
+    border-radius: 50%;
+    margin-bottom: 16px;
+  }
+  
+  .signup-title {
+    font-size: 24px;
+    font-weight: 500;
+    margin: 0 0 8px 0;
+  }
+  
+  .signup-subtitle {
+    font-size: 16px;
+    font-weight: 300;
+    margin: 0;
+    opacity: 0.9;
+  }
+  
+  .signup-form {
+    padding: 24px;
+  }
+  
+  .form-section {
+    margin-bottom: 32px;
+  }
+  
+  .section-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: #1976d2;
+    margin: 0 0 16px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 16px;
+  }
+  
+  .form-field {
+    position: relative;
+    margin-bottom: 24px;
+    width: 100%;
+  }
+  
+  .field-icon {
+    position: absolute;
+    left: 0;
+    top: 8px;
+    color: rgba(0, 0, 0, 0.54);
+  }
+  
+  .material-input {
+    width: 100%;
+    padding: 8px 8px 8px 30px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.42);
+    background-color: transparent;
+    transition: border-bottom 0.3s;
+    outline: none;
+  }
+  
+  .material-input:focus {
+    border-bottom: 2px solid #1976d2;
+  }
+  
+  .material-input::placeholder {
+    color: rgba(0, 0, 0, 0.42);
+  }
+  
+  .field-helper {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.54);
+    margin-top: 4px;
+  }
+  
+  .form-actions {
+    text-align: center;
+    margin-top: 32px;
+  }
+  
+  .submit-button {
+    display: inline-block;
+    background-color: #1976d2;
+    color: white;
+    padding: 12px 24px;
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  .submit-button:hover {
+    background-color: #1565c0;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  }
+  
+  .login-links {
+    text-align: center;
+    padding: 16px 24px;
+    background-color: #f5f5f5;
+    border-top: 1px solid #e0e0e0;
+  }
+  
+  .login-links a {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+  }
+  
+  .login-links a:hover {
+    color: #1565c0;
+    text-decoration: underline;
+  }
+  
+  /* Error messages styling */
+  #error_explanation {
+    background-color: #ffebee;
+    border-left: 4px solid #f44336;
+    padding: 16px;
+    margin-bottom: 24px;
+    border-radius: 4px;
+  }
+  
+  #error_explanation h2 {
+    font-size: 18px;
+    color: #d32f2f;
+    margin-top: 0;
+  }
+  
+  #error_explanation ul {
+    color: #d32f2f;
+    margin-bottom: 0;
+  }
+  
+  .field_with_errors .material-input {
+    border-bottom: 2px solid #f44336;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 480px) {
+    .form-row {
+      flex-direction: column;
+      gap: 0;
+    }
+  }
+</style>
+
+<script>
+  // Optional: Add form validation and interactive effects
+  document.addEventListener('DOMContentLoaded', function() {
+    const inputs = document.querySelectorAll('.material-input');
+    
+    inputs.forEach(input => {
+      // Add focus effect
+      input.addEventListener('focus', function() {
+        this.parentElement.classList.add('focused');
+      });
+      
+      input.addEventListener('blur', function() {
+        this.parentElement.classList.remove('focused');
+        
+        // Add filled class if input has value
+        if (this.value.trim() !== '') {
+          this.classList.add('filled');
+        } else {
+          this.classList.remove('filled');
+        }
+      });
+    });
+  });
+</script>

@@ -1,29 +1,352 @@
-<h1>Appointments</h1>
-<table>
-  <tr>
-    <th>Doctor</th>
-    <th>Patient</th>
-    <th>Date</th>
-    <th>Status</th>
-    <th>Action</th>
-  </tr>
-  <% @appointments.each do |appointment| %>
-    <tr id="appointment-<%= appointment.id %>">
-      <td><%= appointment.doctor.first_name %></td>
-      <td><%= appointment.patient.name %></td>
-      <td><%= appointment.date.strftime("%d %b %Y, %I:%M %p") %></td>
-      <td id="status-<%= appointment.id %>"><%= appointment.status.capitalize %></td>
-      <td>
-        <% if current_doctor && appointment.status == "pending" %>
-        <%= button_to "Confirm", confirm_appointment_path(appointment), method: :patch, remote: true, class: "btn btn-success" %>
-        <%= button_to "Cancel", cancel_appointment_path(appointment), method: :patch, remote: true, class: "btn btn-danger" %>
+<%# Make sure to include the Material UI dependencies in your application %>
+<%# Add to your application.html.erb: %>
+<%# <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" /> %>
+<%# <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" /> %>
 
+<div class="appointments-container">
+  <h2 class="appointments-title">Appointments</h2>
+  
+  <div class="filter-container">
+    <div class="search-field">
+      <i class="material-icons">search</i>
+      <input type="text" id="appointmentSearch" placeholder="Search appointments..." onkeyup="filterAppointments()">
+    </div>
+    
+    <div class="filter-status">
+      <label for="statusFilter">Filter by status: </label>
+      <select id="statusFilter" onchange="filterAppointments()">
+        <option value="all">All</option>
+        <option value="pending">Pending</option>
+        <option value="confirmed">Confirmed</option>
+        <option value="cancelled">Cancelled</option>
+        <option value="completed">Completed</option>
+      </select>
+    </div>
+  </div>
+  
+  <div class="table-container">
+    <table id="appointmentsTable" class="appointments-table">
+      <thead>
+        <tr>
+          <th onclick="sortTable(0)">Doctor <i class="material-icons sort-icon">sort</i></th>
+          <th onclick="sortTable(1)">Patient <i class="material-icons sort-icon">sort</i></th>
+          <th onclick="sortTable(2)">Date <i class="material-icons sort-icon">sort</i></th>
+          <th onclick="sortTable(3)">Status <i class="material-icons sort-icon">sort</i></th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @appointments.each do |appointment| %>
+          <tr class="appointment-row" data-status="<%= appointment.status %>">
+            <td><%= appointment.doctor.first_name %></td>
+            <td><%= appointment.patient.name %></td>
+            <td><%= appointment.date.strftime("%d %b %Y, %I:%M %p") %></td>
+            <td>
+              <span class="status-badge status-<%= appointment.status %>">
+                <%= appointment.status.capitalize %>
+              </span>
+            </td>
+            <td class="action-buttons">
+              <% if current_doctor && appointment.status == "pending" %>
+                <%= button_to confirm_appointment_path(appointment), method: :patch, remote: true, class: "btn btn-confirm" do %>
+                  <i class="material-icons">check_circle</i> Confirm
+                <% end %>
+                <%= button_to cancel_appointment_path(appointment), method: :patch, remote: true, class: "btn btn-cancel" do %>
+                  <i class="material-icons">cancel</i> Cancel
+                <% end %>
+              <% end %>
+              <% if appointment.status == "confirmed" %>
+                <%= link_to video_call_path(appointment), class: "btn btn-video" do %>
+                  <i class="material-icons">videocam</i> Start Video Call
+                <% end %>
+              <% end %>
+            </td>
+          </tr>
         <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
 
-     <% if appointment.status == "confirmed" %>
-  <%= link_to "Start Video Call", video_call_path(appointment), class: "btn btn-primary" %>
-<% end %>
-      </td>
-    </tr>
-  <% end %>
-</table>
+<style>
+  /* Material UI inspired styles */
+  .appointments-container {
+    font-family: 'Roboto', sans-serif;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    border-radius: 4px;
+  }
+  
+  .appointments-title {
+    color: #3f51b5;
+    font-weight: 500;
+    margin-bottom: 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .filter-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .search-field {
+    display: flex;
+    align-items: center;
+    background-color: #f5f5f5;
+    padding: 8px 16px;
+    border-radius: 4px;
+    width: 300px;
+  }
+  
+  .search-field input {
+    border: none;
+    background: transparent;
+    margin-left: 8px;
+    padding: 4px;
+    width: 100%;
+    font-size: 16px;
+    outline: none;
+  }
+  
+  .filter-status select {
+    padding: 8px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 14px;
+    outline: none;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+  }
+  
+  .appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .appointments-table th {
+    background-color: #f5f5f5;
+    padding: 16px;
+    text-align: left;
+    font-weight: 500;
+    color: #757575;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .appointments-table th:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .sort-icon {
+    font-size: 16px;
+    vertical-align: middle;
+    opacity: 0.5;
+  }
+  
+  .appointments-table td {
+    padding: 16px;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .status-badge {
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  
+  .status-pending {
+    background-color: #fff8e1;
+    color: #ffa000;
+  }
+  
+  .status-confirmed {
+    background-color: #e8f5e9;
+    color: #43a047;
+  }
+  
+  .status-cancelled {
+    background-color: #ffebee;
+    color: #e53935;
+  }
+  
+  .status-completed {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 8px;
+  }
+  
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    border: none;
+    transition: background-color 0.2s, box-shadow 0.2s;
+  }
+  
+  .btn:hover {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  .btn i {
+    margin-right: 4px;
+    font-size: 16px;
+  }
+  
+  .btn-confirm {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .btn-confirm:hover {
+    background-color: #43a047;
+  }
+  
+  .btn-cancel {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .btn-cancel:hover {
+    background-color: #e53935;
+  }
+  
+  .btn-video {
+    background-color: #2196f3;
+    color: white;
+  }
+  
+  .btn-video:hover {
+    background-color: #1e88e5;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .filter-container {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .search-field {
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  function sortTable(columnIndex) {
+    const table = document.getElementById("appointmentsTable");
+    let rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+    switching = true;
+    dir = "asc";
+    
+    while (switching) {
+      switching = false;
+      rows = table.rows;
+      
+      for (i = 1; i < (rows.length - 1); i++) {
+        shouldSwitch = false;
+        x = rows[i].getElementsByTagName("TD")[columnIndex];
+        y = rows[i + 1].getElementsByTagName("TD")[columnIndex];
+        
+        // If it's the date column, parse as dates
+        if (columnIndex === 2) {
+          const dateX = new Date(x.innerHTML);
+          const dateY = new Date(y.innerHTML);
+          
+          if (dir === "asc") {
+            if (dateX > dateY) {
+              shouldSwitch = true;
+              break;
+            }
+          } else {
+            if (dateX < dateY) {
+              shouldSwitch = true;
+              break;
+            }
+          }
+        } else {
+          // Regular string comparison
+          if (dir === "asc") {
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+              shouldSwitch = true;
+              break;
+            }
+          } else {
+            if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+              shouldSwitch = true;
+              break;
+            }
+          }
+        }
+      }
+      
+      if (shouldSwitch) {
+        rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+        switching = true;
+        switchcount++;
+      } else {
+        if (switchcount === 0 && dir === "asc") {
+          dir = "desc";
+          switching = true;
+        }
+      }
+    }
+    
+    // Update sort icons
+    const headers = table.getElementsByTagName("TH");
+    for (i = 0; i < headers.length; i++) {
+      const icon = headers[i].getElementsByClassName("sort-icon")[0];
+      if (i === columnIndex) {
+        icon.innerHTML = dir === "asc" ? "arrow_upward" : "arrow_downward";
+        icon.style.opacity = "1";
+      } else {
+        icon.innerHTML = "sort";
+        icon.style.opacity = "0.5";
+      }
+    }
+  }
+  
+  function filterAppointments() {
+    const searchInput = document.getElementById("appointmentSearch").value.toLowerCase();
+    const statusFilter = document.getElementById("statusFilter").value;
+    const rows = document.getElementById("appointmentsTable").getElementsByTagName("TR");
+    
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i];
+      const rowData = row.textContent.toLowerCase();
+      const status = row.getAttribute("data-status");
+      
+      const matchesSearch = rowData.includes(searchInput);
+      const matchesStatus = statusFilter === "all" || status === statusFilter;
+      
+      if (matchesSearch && matchesStatus) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    }
+  }
+</script>

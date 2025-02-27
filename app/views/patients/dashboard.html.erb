@@ -1,56 +1,598 @@
-<h1>Patient Dashboard</h1>
+<!-- Patient Dashboard -->
+<div class="mui-container dashboard-container">
+  <div class="dashboard-header mui-panel">
+    <div class="header-content">
+      <div class="header-left">
+        <h1 class="mui--text-display1 dashboard-title">Patient Dashboard</h1>
+        <p class="mui--text-subhead welcome-message">
+          Welcome, <span class="patient-name"><%= current_patient.name %></span>!
+        </p>
+      </div>
+      <div class="header-right">
+        <div class="patient-avatar">
+          <%= current_patient.name.first.upcase %>
+        </div>
+      </div>
+    </div>
+  </div>
 
-<p>Welcome, <%= current_patient.name %>!</p>
+  <!-- Appointments Section -->
+  <div class="mui-panel dashboard-card">
+    <div class="card-header">
+      <h2 class="mui--text-title section-title">
+        <i class="mui-icon section-icon">event</i>Your Appointments
+      </h2>
+     <a href="<%= new_appointment_path %>" class="mui-btn mui-btn--primary mui-btn--small">
+  <i class="mui-icon btn-icon">add</i> New Appointment
+</a>
+  <a href="<%= prescriptions_path %>" class="mui-btn mui-btn--accent mui-btn--small">
+    <i class="mui-icon btn-icon">assignment</i> View Prescriptions
+  </a>
+    </div>
+    
+    <div class="table-responsive">
+      <table class="mui-table mui-table--bordered appointment-table">
+        <thead>
+          <tr>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @appointments.each do |appointment| %>
+            <tr>
+              <td class="doctor-cell">
+                <div class="doctor-info">
+                  <div class="doctor-avatar">
+                    <%= appointment.doctor.first_name.first.upcase %><%= appointment.doctor.last_name.first.upcase %>
+                  </div>
+                  <div class="doctor-name">
+                    Dr. <%= appointment.doctor.first_name %> <%= appointment.doctor.last_name %>
+                  </div>
+                </div>
+              </td>
+              <td><%= appointment.date.strftime("%d %b %Y") %></td>
+              <td><%= appointment.date.strftime("%I:%M %p") %></td>
+              <td>
+                <span class="status-badge status-<%= appointment.status.downcase %>">
+                  <%= appointment.status.capitalize %>
+                </span>
+              </td>
+              <td class="action-cell">
+                <% if appointment.status == "confirmed" %>
+                  <a href="<%= video_call_path(appointment) %>" class="mui-btn mui-btn--primary mui-btn--raised video-call-btn">
+                    <i class="mui-icon btn-icon">videocam</i> Join Video Call
+                  </a>
+                <% else %>
+                  <span class="waiting-text">
+                    <i class="mui-icon status-icon">hourglass_empty</i> Awaiting Confirmation
+                  </span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+          
+          <% if @appointments.empty? %>
+            <tr>
+              <td colspan="5" class="empty-state">
+                <div class="empty-appointments">
+                  <i class="mui-icon empty-icon">event_busy</i>
+                  <p>You have no appointments scheduled</p>
+                  <button class="mui-btn mui-btn--primary mui-btn--small">Schedule New Appointment</button>
+                </div>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-<h2>Your Appointments</h2>
+  <!-- Account Management Section -->
+  <div class="mui-row dashboard-sections">
+    <div class="mui-col-md-6">
+      <div class="mui-panel dashboard-card">
+        <div class="card-header">
+          <h2 class="mui--text-title section-title">
+            <i class="mui-icon section-icon">account_circle</i>Manage Account
+          </h2>
+        </div>
+        <div class="card-content account-actions">
+          <a href="<%= patients_update_password_path %>" class="mui-btn mui-btn--accent mui-btn--raised">
+            <i class="mui-icon btn-icon">lock</i> Change Password
+          </a>
+         <%= form_with url: destroy_patient_session_path, method: :delete do %>
+  <button type="submit" class="mui-btn mui-btn--danger mui-btn--raised">
+    <i class="mui-icon btn-icon">exit_to_app</i> Logout
+  </button>
+<% end %>
+          
+        </div>
+      </div>
+    </div>
 
-<table>
-  <tr>
-    <th>Doctor</th>
-    <th>Date</th>
-    <th>Status</th>
-    <th>Action</th>
-  </tr>
-
-  <% @appointments.each do |appointment| %>
-    <tr>
-      <td><%= appointment.doctor.first_name %> <%= appointment.doctor.last_name %></td>
-      <td><%= appointment.date.strftime("%d %b %Y, %I:%M %p") %></td>
-      <td><%= appointment.status.capitalize %></td>
-      <td>
-        <% if appointment.status == "confirmed" %>
-          <a href="<%= video_call_path(appointment) %>" class="btn btn-primary">Join Video Call</a>
-        <% else %>
-          <span class="text-muted">Waiting for Confirmation</span>
-        <% end %>
-      </td>
-    </tr>
-  <% end %>
-</table>
-
-<hr>
-
-<h2>Manage Account</h2>
-<p>
-  <a href="<%= patients_update_password_path %>" class="btn btn-info">Edit password</a>
-  
-  <a href="<%= destroy_patient_session_path %>" data-turbo-method="delete" class="btn btn-danger">Logout</a>
-</p>
-
-<h2>Notifications</h2>
-<div id="notifications">
-  <!-- Notifications will be dynamically added here -->
+    <!-- Notifications Section -->
+    <div class="mui-col-md-6">
+      <div class="mui-panel dashboard-card">
+        <div class="card-header">
+          <h2 class="mui--text-title section-title">
+            <i class="mui-icon section-icon">notifications</i>Notifications
+          </h2>
+        </div>
+        <div id="notifications" class="notifications-container">
+          <!-- Notifications will be dynamically added here -->
+          <div class="empty-notifications">
+            <i class="mui-icon empty-icon">notifications_none</i>
+            <p>No new notifications</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- Material Icons -->
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+<!-- Scripts -->
 <script>
   document.addEventListener("DOMContentLoaded", function() {
+    // Notification channel subscription
     App.cable.subscriptions.create("NotificationChannel", {
       received(data) {
-        let notificationDiv = document.getElementById("notifications");
-        let notification = document.createElement("p");
-        notification.innerHTML = `<strong>${data.message}</strong>`;
-        notificationDiv.appendChild(notification);
+        let notificationsContainer = document.getElementById("notifications");
+        
+        // Remove empty state if it exists
+        const emptyState = notificationsContainer.querySelector('.empty-notifications');
+        if (emptyState) {
+          emptyState.remove();
+        }
+        
+        // Create new notification element
+        let notification = document.createElement("div");
+        notification.className = "notification-item";
+        
+        // Format current time
+        const now = new Date();
+        const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        notification.innerHTML = `
+          <div class="notification-content">
+            <i class="mui-icon notification-icon">info</i>
+            <div class="notification-message">
+              <p>${data.message}</p>
+              <span class="notification-time">${timeString}</span>
+            </div>
+          </div>
+          <button class="notification-dismiss">
+            <i class="mui-icon">close</i>
+          </button>
+        `;
+        
+        // Add to notifications container
+        notificationsContainer.insertBefore(notification, notificationsContainer.firstChild);
+        
+        // Handle dismiss button
+        const dismissBtn = notification.querySelector('.notification-dismiss');
+        dismissBtn.addEventListener('click', function() {
+          notification.classList.add('notification-removing');
+          setTimeout(() => {
+            notification.remove();
+            // Check if there are no notifications left
+            if (notificationsContainer.children.length === 0) {
+              notificationsContainer.innerHTML = `
+                <div class="empty-notifications">
+                  <i class="mui-icon empty-icon">notifications_none</i>
+                  <p>No new notifications</p>
+                </div>
+              `;
+            }
+          }, 300);
+        });
       }
     });
   });
 </script>
+
+<style>
+  /* ========================
+     Global Styles
+     ======================== */
+  body {
+    font-family: 'Roboto', 'Arial', sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+  }
+  
+  .mui-container {
+    max-width: 1200px;
+  }
+  
+  .mui-panel {
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    padding: 0;
+    overflow: hidden;
+    border: none;
+  }
+  
+  .mui-icon {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    vertical-align: middle;
+    -webkit-font-smoothing: antialiased;
+  }
+  
+  /* ========================
+     Dashboard Container
+     ======================== */
+  .dashboard-container {
+    padding: 20px 0;
+  }
+  
+  /* ========================
+     Dashboard Header
+     ======================== */
+  .dashboard-header {
+    background: linear-gradient(135deg, #3f51b5, #7986cb);
+    color: white;
+    margin-bottom: 30px;
+  }
+  
+  .header-content {
+    padding: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .dashboard-title {
+    margin: 0;
+    color: white;
+    font-weight: 300;
+  }
+  
+  .welcome-message {
+    margin: 10px 0 0 0;
+    opacity: 0.9;
+  }
+  
+  .patient-name {
+    font-weight: 500;
+  }
+  
+  .patient-avatar {
+    width: 60px;
+    height: 60px;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 500;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* ========================
+     Dashboard Cards
+     ======================== */
+  .dashboard-card {
+    margin-bottom: 30px;
+    background-color: white;
+  }
+  
+  .card-header {
+    padding: 20px 30px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .section-title {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    color: #3f51b5;
+  }
+  
+  .section-icon {
+    margin-right: 10px;
+    color: #3f51b5;
+  }
+  
+  .create-appointment-btn {
+    display: flex;
+    align-items: center;
+  }
+  
+  .btn-icon {
+    font-size: 18px;
+    margin-right: 5px;
+  }
+  
+  /* ========================
+     Appointments Table
+     ======================== */
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .appointment-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .appointment-table th {
+    background-color: #f5f7fa;
+    color: #5c6bc0;
+    font-weight: 500;
+    padding: 15px;
+    text-align: left;
+    font-size: 14px;
+  }
+  
+  .appointment-table td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  
+  .appointment-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .appointment-table tr:hover {
+    background-color: rgba(63, 81, 181, 0.03);
+  }
+  
+  /* Doctor Cell */
+  .doctor-cell {
+    min-width: 180px;
+  }
+  
+  .doctor-info {
+    display: flex;
+    align-items: center;
+  }
+  
+  .doctor-avatar {
+    width: 36px;
+    height: 36px;
+    background: #5c6bc0;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 500;
+    margin-right: 12px;
+  }
+  
+  .doctor-name {
+    font-weight: 500;
+  }
+  
+  /* Status Badge */
+  .status-badge {
+    padding: 6px 12px;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+  .status-confirmed {
+    background-color: rgba(76, 175, 80, 0.1);
+    color: #2e7d32;
+    border: 1px solid rgba(76, 175, 80, 0.2);
+  }
+  
+  .status-pending {
+    background-color: rgba(255, 152, 0, 0.1);
+    color: #ef6c00;
+    border: 1px solid rgba(255, 152, 0, 0.2);
+  }
+  
+  .status-cancelled {
+    background-color: rgba(244, 67, 54, 0.1);
+    color: #d32f2f;
+    border: 1px solid rgba(244, 67, 54, 0.2);
+  }
+  
+  /* Action Cell */
+  .action-cell {
+    min-width: 150px;
+  }
+  
+  .video-call-btn {
+    display: flex;
+    align-items: center;
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+  
+  .waiting-text {
+    display: flex;
+    align-items: center;
+    color: #9e9e9e;
+    font-size: 13px;
+  }
+  
+  .status-icon {
+    font-size: 16px;
+    margin-right: 5px;
+  }
+  
+  /* Empty State */
+  .empty-state {
+    text-align: center;
+    padding: 40px 0;
+  }
+  
+  .empty-appointments {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #9e9e9e;
+  }
+  
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 10px;
+    color: #c5cae9;
+  }
+  
+  /* ========================
+     Account Management
+     ======================== */
+  .dashboard-sections {
+    margin-bottom: 20px;
+  }
+  
+  .card-content {
+    padding: 30px;
+  }
+  
+  .account-actions {
+    display: flex;
+    gap: 15px;
+  }
+  
+  /* ========================
+     Notifications
+     ======================== */
+  .notifications-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 0;
+  }
+  
+  .notification-item {
+    padding: 15px 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+    animation: slideIn 0.3s ease;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .notification-removing {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  
+  .notification-content {
+    display: flex;
+    align-items: center;
+    flex: 1;
+  }
+  
+  .notification-icon {
+    font-size: 20px;
+    margin-right: 15px;
+    color: #5c6bc0;
+  }
+  
+  .notification-message {
+    flex: 1;
+  }
+  
+  .notification-message p {
+    margin: 0 0 5px 0;
+  }
+  
+  .notification-time {
+    font-size: 12px;
+    color: #9e9e9e;
+  }
+  
+  .notification-dismiss {
+    background: transparent;
+    border: none;
+    color: #9e9e9e;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  .notification-dismiss:hover {
+    background-color: #f5f5f5;
+    color: #f44336;
+  }
+  
+  .notification-dismiss .mui-icon {
+    font-size: 18px;
+  }
+  
+  .empty-notifications {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: #9e9e9e;
+    text-align: center;
+  }
+  
+  /* ========================
+     Responsive Design
+     ======================== */
+  @media (max-width: 768px) {
+    .header-content {
+      flex-direction: column;
+      text-align: center;
+    }
+    
+    .header-right {
+      margin-top: 20px;
+    }
+    
+    .account-actions {
+      flex-direction: column;
+    }
+    
+    .card-header {
+      flex-direction: column;
+      gap: 15px;
+      align-items: flex-start;
+    }
+    
+    .create-appointment-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
