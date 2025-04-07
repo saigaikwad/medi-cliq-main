@@ -1,0 +1,26 @@
+<h1>Manage Categories</h1>
+
+<%= link_to 'Back to Admin Dashboard', admin_root_path, class: 'btn btn-secondary mb-3 me-2' %>
+<%= link_to 'Add New Category', new_admin_category_path, class: 'btn btn-primary mb-3' %>
+
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Created At</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @categories.each do |category| %>
+    <tr>
+      <td><%= category.name %></td>
+      <td><%= category.created_at.strftime("%d %b %Y") %></td>
+      <td>
+        <%= link_to 'Edit', edit_admin_category_path(category), class: 'btn btn-sm btn-outline-primary me-1' %>
+        <%= link_to 'Delete', admin_category_path(category), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-sm btn-outline-danger' %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

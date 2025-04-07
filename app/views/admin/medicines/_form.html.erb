@@ -1,0 +1,48 @@
+<%= form_with model: [:admin, @medicine], local: true do |form| %>
+  <div class="mb-3">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :batch_no %>
+    <%= form.text_field :batch_no, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :manufacturer %>
+    <%= form.text_field :manufacturer, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :form %>
+    <%= form.text_field :form, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :exp_date %>
+    <%= form.date_field :exp_date, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :price %>
+    <%= form.number_field :price, step: 0.01, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :quantity %>
+    <%= form.number_field :quantity, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :prescribed %>
+    <%= form.check_box :prescribed %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :category_id, "Category" %>
+    <%= form.collection_select :category_id, Category.all, :id, :name, class: "form-control" %>
+  </div>
+
+  <%= form.submit class: "btn btn-success" %>
+<% end %>

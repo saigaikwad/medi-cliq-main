@@ -1,0 +1,31 @@
+<h1>New Batch for <%= @medicine.name %></h1>
+
+<%= form_with model: @batch, url: create_batch_admin_medicine_path(@medicine), local: true do |f| %>
+  <div class="mb-3">
+    <%= f.label :batch_no %>
+    <%= f.text_field :batch_no, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :exp_date %>
+    <%= f.date_field :exp_date, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :quantity %>
+    <%= f.number_field :quantity, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :price %>
+    <%= f.number_field :price, class: "form-control", step: "0.01" %>
+  </div>
+
+  <%= f.hidden_field :name %>
+  <%= f.hidden_field :form %>
+  <%= f.hidden_field :manufacturer %>
+  <%= f.hidden_field :category_id %>
+  <%= f.hidden_field :prescribed %>
+
+  <%= f.submit "Create Batch", class: "btn btn-success" %>
+<% end %>

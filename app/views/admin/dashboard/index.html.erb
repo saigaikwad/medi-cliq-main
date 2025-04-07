@@ -1,0 +1,19 @@
+<h1>Admin Dashboard</h1>
+
+<ul>
+  <li>Total Doctors: <%= @doctors_count %></li>
+  <li>Total Patients: <%= @patients_count %></li>
+  <li>Total Appointments: <%= @appointments_count %></li>
+  <li>Total Prescriptions: <%= @prescriptions_count %></li>
+  <li>Total Medicines: <%= @medicines_count %></li>
+  <li>Total Categories: <%= @categories_count %></li>
+</ul>
+
+<div class="mt-4">
+  <%= link_to 'Manage Doctors', admin_doctors_path, class: 'btn btn-primary' %>
+  <%= link_to 'Manage Patients', admin_patients_path, class: 'btn btn-secondary' %>
+  <%#= link_to 'Manage Appointments', admin_appointments_path, class: 'btn btn-success' %>
+  <%= link_to 'Manage Medicines', admin_medicines_path, class: 'btn btn-warning' %>
+  <%= link_to 'Manage Categories', admin_categories_path, class: 'btn btn-info' %>
+  <%#= link_to 'Manage Prescriptions', admin_prescriptions_path, class: 'btn btn-dark' %>
+</div>
