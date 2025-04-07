@@ -1,4 +1,5 @@
 class MedicinesController < ApplicationController
+  before_action :authenticate_admin2!
   before_action :set_medicine, only: %i[ show edit update destroy ]
 
   # GET /medicines or /medicines.json

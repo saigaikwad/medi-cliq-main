@@ -5,6 +5,7 @@ class PatientsController < ApplicationController
   def dashboard
     @prescriptions = @patient.prescriptions # Show only the logged-in patient's prescriptions
     @appointments = current_patient.appointments.includes(:doctor)
+    @patient = current_patient
   end
 
   def edit_password

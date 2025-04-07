@@ -10,12 +10,36 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_16_071452) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_07_132816) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "admin2s", force: :cascade do |t|
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_admin2s_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_admin2s_on_reset_password_token", unique: true
+  end
+
+  create_table "admins", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "email", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.index ["email"], name: "index_admins_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true
+  end
+
   create_table "appointments", force: :cascade do |t|
-    t.bigint "doctor_id", null: false
+    t.bigint "doctor_id"
     t.bigint "patient_id", null: false
     t.datetime "date"
     t.string "status"
@@ -44,6 +68,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_16_071452) do
     t.string "license_no"
     t.string "phone_number"
     t.string "education"
+    t.datetime "deleted_at"
     t.index ["email"], name: "index_doctors_on_email", unique: true
     t.index ["reset_password_token"], name: "index_doctors_on_reset_password_token", unique: true
   end
@@ -81,6 +106,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_16_071452) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "doctor_id"
+    t.text "medical_history"
     t.index ["doctor_id"], name: "index_patients_on_doctor_id"
     t.index ["email"], name: "index_patients_on_email", unique: true
     t.index ["reset_password_token"], name: "index_patients_on_reset_password_token", unique: true
@@ -88,7 +114,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_16_071452) do
 
   create_table "prescriptions", force: :cascade do |t|
     t.bigint "patient_id", null: false
-    t.bigint "doctor_id", null: false
+    t.bigint "doctor_id"
     t.bigint "medicine_id", null: false
     t.text "dosage_description"
     t.integer "prescription_quantity"

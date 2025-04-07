@@ -1,34 +1,227 @@
 <% if @appointment %>
-  <h1>Video Call with <%= @appointment.doctor.first_name %></h1>
-
-  <div id="meet"></div>
+  <div class="video-call-container">
+    <div class="call-header">
+      <h1>Video Call with <%= @appointment.doctor.first_name %></h1>
+      <div class="call-info">
+        <div class="info-badge">
+          <span class="info-icon">🕒</span>
+          <span id="call-time">00:00</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="meet-container">
+      <div id="meet"></div>
+    </div>
+    
+    <div class="controls-container">
+      <button id="leave-btn" class="control-btn leave">End Call</button>
+    </div>
+  </div>
 
   <script>
     document.addEventListener("DOMContentLoaded", function () {
+      // Start timer for call duration
+      let seconds = 0;
+      const timerElement = document.getElementById('call-time');
+      setInterval(function() {
+        seconds++;
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+      }, 1000);
+      
+      // Initialize Jitsi
       const domain = "meet.jit.si";
       const roomName = "<%= @room_name %>";
       const options = {
         roomName: roomName,
-        width: 800,
-        height: 600,
+        width: "100%",
+        height: "100%",
         parentNode: document.querySelector("#meet"),
         userInfo: {
           displayName: "<%= current_doctor&.first_name || current_patient&.first_name %>"
         },
         configOverwrite: {
           startWithAudioMuted: false,
-          startWithVideoMuted: false
+          startWithVideoMuted: false,
+          prejoinPageEnabled: false,
+          disableDeepLinking: true
+        },
+        interfaceConfigOverwrite: {
+          TOOLBAR_BUTTONS: [
+            'microphone', 'camera', 'closedcaptions', 'desktop', 'fullscreen',
+            'fodeviceselection', 'hangup', 'chat', 'recording',
+            'settings', 'raisehand', 'videoquality', 'filmstrip',
+            'tileview'
+          ],
+          SHOW_JITSI_WATERMARK: false,
+          DEFAULT_BACKGROUND: '#f5f5f5'
         }
       };
-
+      
       const api = new JitsiMeetExternalAPI(domain, options);
-
-      // Debugging console log
       console.log("Jitsi Meet API Initialized:", api);
-
+      
       api.executeCommand('displayName', "<%= current_doctor&.first_name || current_patient&.first_name %>");
+      
+      // Handle end call button
+      document.getElementById('leave-btn').addEventListener('click', function() {
+        api.executeCommand('hangup');
+        window.location.href = '/appointments';
+      });
     });
   </script>
 <% else %>
-  <p>Appointment not found.</p>
+  <div class="not-found-container">
+    <div class="not-found-card">
+      <div class="not-found-icon">❌</div>
+      <h2>Appointment Not Found</h2>
+      <p>We couldn't find the appointment you're looking for.</p>
+      <a href="/appointments" class="back-btn">Back to Appointments</a>
+    </div>
+  </div>
 <% end %>
+
+<style>
+  /* Material UI inspired styles */
+  body {
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.87);
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .video-call-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+
+  .call-header {
+    background-color: white;
+    padding: 16px 24px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 10;
+  }
+
+  .call-header h1 {
+    margin: 0;
+    font-size: 20px;
+    color: #1976d2;
+    font-weight: 500;
+  }
+
+  .call-info {
+    display: flex;
+    align-items: center;
+  }
+
+  .info-badge {
+    background-color: rgba(25, 118, 210, 0.1);
+    color: #1976d2;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+  }
+
+  .info-icon {
+    margin-right: 6px;
+  }
+
+  .meet-container {
+    flex: 1;
+    position: relative;
+    background-color: #202124;
+    overflow: hidden;
+  }
+
+  #meet {
+    width: 100%;
+    height: 100%;
+  }
+
+  .controls-container {
+    padding: 16px;
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .control-btn {
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s;
+  }
+
+  .leave {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .leave:hover {
+    background-color: #d32f2f;
+  }
+
+  /* Styles for the "Appointment not found" state */
+  .not-found-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f5f5f5;
+  }
+
+  .not-found-card {
+    background-color: white;
+    padding: 32px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 400px;
+  }
+
+  .not-found-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .not-found-card h2 {
+    color: #1976d2;
+    margin-bottom: 16px;
+  }
+
+  .not-found-card p {
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 24px;
+  }
+
+  .back-btn {
+    display: inline-block;
+    background-color: #1976d2;
+    color: white;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 4px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+
+  .back-btn:hover {
+    background-color: #115293;
+  }
+</style>

@@ -20,30 +20,43 @@ class Doctors::PatientsController < ApplicationController
   
 
   def create
-    generated_password = SecureRandom.hex(8) # Generate a random password
-    @patient = Patient.new(patient_params)
-    @patient.doctor_id = current_doctor.id
-    @patient.password = generated_password
-    @patient.password_confirmation = generated_password
+    # Check for existing patient by email or phone
+    @patient = Patient.find_by(email: patient_params[:email]) || Patient.find_by(phone: patient_params[:phone])
   
-    # Assign doctor_id to each prescription before saving
-    @patient.prescriptions.each { |p| p.doctor_id = current_doctor.id }
+    if @patient
+      # If patient exists, just create a new prescription under this patient
+      prescription = @patient.prescriptions.build(patient_params[:prescriptions_attributes]["0"])
+      prescription.doctor_id = current_doctor.id
   
-    if @patient.save
-      # Fetch the latest prescription associated with this patient
-      prescription = @patient.prescriptions.last 
-      
-      # Send login details to patient via email
-      PatientMailer.send_login_details(@patient, generated_password).deliver_now
-  
-      # Redirect to the specific prescription's show page
-      redirect_to prescription_path(prescription), notice: "Patient & Prescription created successfully!"
+      if prescription.save
+        redirect_to prescription_path(prescription), notice: "Prescription added to existing patient!"
+      else
+        flash[:alert] = prescription.errors.full_messages.join(", ")
+        render :new
+      end
     else
-      puts @patient.errors.full_messages  # Debugging
-      flash[:alert] = @patient.errors.full_messages.join(", ") 
-      render :new
+      # New patient path
+      generated_password = SecureRandom.hex(8)
+      @patient = Patient.new(patient_params)
+      @patient.doctor_id = current_doctor.id
+      @patient.password = generated_password
+      @patient.password_confirmation = generated_password
+  
+      # Assign doctor_id to each prescription
+      @patient.prescriptions.each { |p| p.doctor_id = current_doctor.id }
+  
+      if @patient.save
+        prescription = @patient.prescriptions.last
+        PatientMailer.send_login_details(@patient, generated_password).deliver_now
+        redirect_to prescription_path(prescription), notice: "Patient & Prescription created successfully!"
+      else
+        puts @patient.errors.full_messages
+        flash[:alert] = @patient.errors.full_messages.join(", ")
+        render :new
+      end
     end
   end
+  
 
   private
 
