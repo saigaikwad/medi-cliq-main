@@ -1,0 +1,66 @@
+<h1>Manage Medicines</h1>
+
+<%= link_to 'Back to Admin Dashboard', admin_root_path, class: 'btn btn-secondary mb-3 me-2' %>
+<hr>
+<table class="table table-bordered">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Category</th>
+    <th>Form</th>
+    <th>Prescribed</th>
+    <th>Total Quantity</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @medicines.each do |name, batches| %>
+    <% first_batch = batches.first %>
+    <% total_quantity = batches.sum(&:quantity) %>
+    <tr>
+      <td><%= name %></td>
+      <td><%= first_batch&.category&.name || '-' %></td>
+      <td><%= first_batch&.form || '-' %></td>
+      <td><%= first_batch&.prescribed ? 'Yes' : 'No' %></td>
+      <td><%= total_quantity %></td>
+      <td>
+        <%= link_to 'View', admin_medicine_path(first_batch), class: 'btn btn-sm btn-outline-info me-1' %>
+        <%# if first_batch.present? %>
+          <%#= link_to 'Add Batch', new_batch_admin_medicine_path(first_batch), class: 'btn btn-sm btn-outline-success' %>
+        <%# end %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+<%= link_to 'Add New Medicine', new_admin_medicine_path, class: 'btn btn-primary mb-3' %>
+
+<hr>
+
+<!-- Analytics Section -->
+<div class="row mb-4">
+  <div class="col-md-4">
+    <div class="card border-info text-center">
+      <div class="card-body">
+        <h5 class="card-title">Total Medicines</h5>
+        <p class="card-text fs-4 fw-bold"><%= @medicines.keys.count %></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-success text-center">
+      <div class="card-body">
+        <h5 class="card-title">Total Batches</h5>
+        <p class="card-text fs-4 fw-bold"><%= @medicines.values.flatten.count %></p>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card border-warning text-center">
+      <div class="card-body">
+        <h5 class="card-title">Total Quantity</h5>
+        <p class="card-text fs-4 fw-bold"><%= @medicines.values.flatten.sum(&:quantity) %></p>
+      </div>
+    </div>
+  </div>
+</div>

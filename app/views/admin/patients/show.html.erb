@@ -1,0 +1,85 @@
+<h1>Patient Details</h1>
+
+<%= link_to 'Back to Patients List', admin_patients_path, class: 'btn btn-outline-secondary mb-3' %>
+<%= link_to 'Back to Admin Dashboard', admin_root_path, class: 'btn btn-secondary mb-3 ms-2' %>
+
+<hr>
+
+<% if flash[:alert] %>
+  <div class="alert alert-danger"><%= flash[:alert] %></div>
+<% elsif flash[:notice] %>
+  <div class="alert alert-success"><%= flash[:notice] %></div>
+<% end %>
+
+<h3>Basic Information</h3>
+
+<% if @authenticated %>
+  <div id="sensitive-info">
+    <table class="table table-striped">
+      <tr>
+        <th>Name</th>
+        <td><%= @patient.name %></td>
+      </tr>
+      <tr>
+        <th>Email</th>
+        <td><%=@patient.email %></td>
+      </tr>
+      <tr>
+        <th>Registered On</th>
+        <td><%= @patient.created_at.to_date %></td>
+      </tr>
+    </table>
+
+    <%= button_to "Lock Details", lock_admin_patient_path(@patient), method: :post, class: "btn btn-danger", form_class: "d-inline" %>
+  </div>
+
+  <script>
+      setTimeout(() => {
+          document.querySelector("form[action*='lock']").submit();
+      }, 10000); // 10 seconds
+  </script>
+<% else %>
+  <p class="text-muted">Sensitive information is hidden. Enter admin password to unlock.</p>
+
+  <%= form_with url: authenticate_admin_patient_path(@patient), method: :post, local: true do |form| %>
+    <div class="mb-3">
+      <%= form.label :admin_password, "Admin Password" %>
+      <%= form.password_field :admin_password, class: "form-control", required: true %>
+    </div>
+    <%= form.submit "Unlock", class: "btn btn-warning" %>
+  <% end %>
+<% end %>
+
+<hr>
+
+<h3>Appointment History</h3>
+
+<% if @patient.appointments.any? %>
+  <table class="table table-bordered">
+    <thead>
+    <tr>
+      <th>Doctor</th>
+      <th>Date</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @patient.appointments.includes(:doctor).order(created_at: :desc).each do |appt| %>
+      <tr>
+        <td><%= appt.doctor.full_name %></td>
+        <td><%= appt.created_at.to_date %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>No appointments found for this patient.</p>
+<% end %>
+
+<hr>
+
+<h3>Analytics & Stats</h3>
+<ul>
+  <li><strong>Total Appointments:</strong> <%= @patient.appointments.count %></li>
+  <li><strong>Associated Doctors:</strong> <%= @patient.doctors.uniq.count %></li>
+  <li><strong>Last Seen:</strong> <%= @patient.updated_at.to_date %></li>
+</ul>

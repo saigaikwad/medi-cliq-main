@@ -1,0 +1,60 @@
+<h1>Manage Doctors</h1>
+
+<%= link_to "Add New Doctor", new_admin_doctor_path, class: "btn btn-primary" %>
+<%= link_to 'Back to Admin Dashboard', admin_root_path, class: 'btn btn-secondary mb-3' %>
+
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Patients</th>
+    <th>Appointments</th>
+    <th>Status</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @doctors.each do |doctor| %>
+    <tr>
+      <td><%= doctor.full_name %></td>
+      <td><%= doctor.email %></td>
+      <td><%= doctor.patients.count %></td>
+      <td><%= doctor.appointments.count %></td>
+      <td>
+        <% if doctor.deleted? %>
+          <span class="text-danger">Deleted</span>
+        <% else %>
+          <span class="text-success">Active</span>
+        <% end %>
+      </td>
+      <td>
+        <%= link_to "Details", admin_doctor_path(doctor), class: "btn btn-outline-primary btn-sm" %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<h2>Analytics</h2>
+
+<h3>Recently Added Doctors</h3>
+<ul>
+  <% @analytics[:recently_added].each do |doc| %>
+    <li><%= doc.full_name %> (<%= doc.created_at.to_date %>)</li>
+  <% end %>
+</ul>
+
+<h3>Doctors with Most Appointments</h3>
+<ul>
+  <% @analytics[:most_appointments].each do |doc| %>
+    <li><%= doc.full_name %>: <%= doc.appointments.count %> appointments</li>
+  <% end %>
+</ul>
+
+<h3>Total Patients Per Doctor</h3>
+<ul>
+  <% @analytics[:total_patients_per_doctor].each do |name, count| %>
+    <li><%= name %>: <%= count %> patients</li>
+  <% end %>
+</ul>

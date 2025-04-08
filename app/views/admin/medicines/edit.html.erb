@@ -1,0 +1,57 @@
+<h1>Edit Medicine</h1>
+
+<%= link_to 'Back to Medicine Details', admin_medicine_path(@medicine), class: 'btn btn-outline-secondary mb-3' %>
+<%= link_to 'Back to Medicines List', admin_medicines_path, class: 'btn btn-secondary mb-3 ms-2' %>
+
+<hr>
+
+<%= form_with model: [:admin, @medicine], local: true do |form| %>
+  <% if @medicine.errors.any? %>
+    <div class="alert alert-danger">
+      <h4>There were some errors:</h4>
+      <ul>
+        <% @medicine.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "form-control", required: true %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :form %>
+    <%= form.text_field :form, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :manufacturer %>
+    <%= form.text_field :manufacturer, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :category_id, "Category" %>
+    <%= form.collection_select :category_id, Category.all, :id, :name, { prompt: "Select Category" }, { class: "form-select" } %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :price %>
+    <%= form.number_field :price, step: 0.01, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :quantity %>
+    <%= form.number_field :quantity, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :prescribed %>
+    <%= form.check_box :prescribed %>
+  </div>
+
+
+  <%= form.submit "Update Medicine", class: "btn btn-primary" %>
+<% end %>

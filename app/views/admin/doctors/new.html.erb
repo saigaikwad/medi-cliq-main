@@ -1,0 +1,7 @@
+<h1>New Doctor</h1>
+
+<%= link_to 'Back to Admin Dashboard', admin_root_path, class: 'btn btn-secondary mb-3' %>
+
+<%= render 'form', doctor: @doctor %>
+
+<%= link_to 'Back to Doctors List', admin_doctors_path, class: 'btn btn-outline-secondary mt-3' %>
