@@ -1,0 +1,54 @@
+<%= form_with(model: [:admin, doctor], local: true) do |form| %>
+  <% if doctor.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(doctor.errors.count, "error") %> prohibited this doctor from being saved:</h4>
+      <ul>
+        <% doctor.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= form.label :first_name %>
+    <%= form.text_field :first_name, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :last_name %>
+    <%= form.text_field :last_name, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :email %>
+    <%= form.email_field :email, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :phone_number %>
+    <%= form.telephone_field :phone_number, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :license_no %>
+    <%= form.text_field :license_no, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :education %>
+    <%= form.text_area :education, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :password %>
+    <%= form.password_field :password, class: "form-control" %>
+  </div>
+
+  <div class="mb-3">
+    <%= form.label :password_confirmation %>
+    <%= form.password_field :password_confirmation, class: "form-control" %>
+  </div>
+
+  <%= form.submit class: "btn btn-primary" %>
+<% end %>

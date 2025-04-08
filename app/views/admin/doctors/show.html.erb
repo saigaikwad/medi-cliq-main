@@ -1,0 +1,76 @@
+<h1>Doctor: <%= @doctor.full_name %></h1>
+
+<%= link_to 'Back to Admin Dashboard', admin_root_path, class: 'btn btn-secondary' %>
+<%= link_to 'Back to Manage Doctor', admin_doctors_path, class: 'btn btn-outline-secondary' %>
+
+<hr>
+
+<h2>Doctor Details</h2>
+<ul>
+  <li><strong>Full Name:</strong> <%= @doctor.full_name %></li>
+  <li><strong>Email:</strong> <%= @doctor.email %></li>
+  <li><strong>Phone Number:</strong> <%= @doctor.phone_number %></li>
+  <li><strong>License No:</strong> <%= @doctor.license_no %></li>
+  <li><strong>Education:</strong> <%= @doctor.education %></li>
+  <li><strong>Status:</strong> <%= @doctor.deleted? ? 'Deleted' : 'Active' %></li>
+</ul>
+
+<%= link_to 'Edit', edit_admin_doctor_path(@doctor), class: 'btn btn-primary' %>
+
+<% if @doctor.deleted? %>
+  <%= link_to 'Restore', restore_admin_doctor_path(@doctor), method: :patch, class: 'btn btn-success' %>
+<% else %>
+  <%= link_to 'Soft Delete', admin_doctor_path(@doctor), method: :delete, data: { confirm: "Are you sure?" }, class: 'btn btn-danger' %>
+<% end %>
+
+<hr>
+
+<h2>Assigned Patients</h2>
+
+<% if @doctor.patients.any? %>
+  <table class="table table-bordered mt-3">
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Appointment Count</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @doctor.patients.distinct.each do |patient| %>
+      <tr>
+        <td>Patient #<%= patient.id %></td>
+        <td><%= patient.appointments.where(doctor: @doctor).count %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>This doctor currently has no assigned patients.</p>
+<% end %>
+
+<hr>
+
+<h2>Appointments</h2>
+
+<% if @doctor.appointments.any? %>
+  <table class="table table-striped mt-3">
+    <thead>
+    <tr>
+      <th>Patient</th>
+      <th>Date</th>
+      <th>Status</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% @doctor.appointments.includes(:patient).order(created_at: :desc).each do |appointment| %>
+      <tr>
+        <td>Patient #<%= appointment.patient.id %></td>
+        <td><%= appointment.date.strftime("%d %b %Y") %></td>
+        <td><%= appointment.status.titleize %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p>This doctor currently has no appointments.</p>
+<% end %>

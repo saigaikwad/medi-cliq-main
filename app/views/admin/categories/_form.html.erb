@@ -1,0 +1,19 @@
+<%= form_with model: [:admin, category], local: true, class: 'needs-validation' do |f| %>
+  <% if category.errors.any? %>
+    <div class="alert alert-danger">
+      <h4><%= pluralize(category.errors.count, "error") %> prevented this category from being saved:</h4>
+      <ul>
+        <% category.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-3">
+    <%= f.label :name, class: 'form-label' %>
+    <%= f.text_field :name, class: 'form-control', placeholder: 'e.g., Antibiotics', required: true %>
+  </div>
+
+  <%= f.submit category.new_record? ? 'Create Category' : 'Update Category', class: 'btn btn-primary' %>
+<% end %>

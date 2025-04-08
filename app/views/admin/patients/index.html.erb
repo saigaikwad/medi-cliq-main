@@ -1,0 +1,39 @@
+<h1>Manage Patients</h1>
+
+<%= link_to 'Back to Admin Dashboard', admin_root_path, class: 'btn btn-secondary mb-3' %>
+
+<table class="table">
+  <thead>
+  <tr>
+    <th>Name</th>
+    <th>Email</th>
+    <th>Appointments Count</th>
+    <th>Registered On</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @patients.each do |patient| %>
+    <tr>
+      <td>
+        <%# Show only first initial and last name if available %>
+        <%= "#{patient.name.first.upcase}. #{patient.name.split.last if patient.name.split.size > 1}" %>
+      </td>
+      <td>
+        <%# Mask email - show only first letter, then asterisks, then domain %>
+        <% if patient.email.present? %>
+          <% local, domain = patient.email.split('@') %>
+          <%= "#{local[0]}***@#{domain}" %>
+        <% else %>
+          N/A
+        <% end %>
+      </td>
+      <td><%= patient.appointments.count %></td>
+      <td><%= patient.created_at.to_date %></td>
+      <td>
+        <%= link_to 'View Details', admin_patient_path(patient), class: 'btn btn-outline-primary btn-sm' %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
