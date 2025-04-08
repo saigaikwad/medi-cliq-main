@@ -1,11 +1,6 @@
 Rails.application.routes.draw do
-  namespace :admin2 do
-    root "dashboard#index"
-    resources :medicines
-    resources :categories
-  end
+
   
-  devise_for :admin2s
  
  
   get 'home/index'
@@ -59,13 +54,8 @@ end
 
   resources :appointments, only: [:new, :create, :index, :update, :show]
 
-  devise_for :admins
-  namespace :admin do
-    resources :medicines
-    resources :doctors, only: [:index, :show]
-    get 'dashboard', to: 'dashboard#index'
-    root to: 'dashboard#index'
-  end
+
+  
   
 
 
