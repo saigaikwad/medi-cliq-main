@@ -1,19 +1,230 @@
-<h1>Admin Dashboard</h1>
-
-<ul>
-  <li>Total Doctors: <%= @doctors_count %></li>
-  <li>Total Patients: <%= @patients_count %></li>
-  <li>Total Appointments: <%= @appointments_count %></li>
-  <li>Total Prescriptions: <%= @prescriptions_count %></li>
-  <li>Total Medicines: <%= @medicines_count %></li>
-  <li>Total Categories: <%= @categories_count %></li>
-</ul>
-
-<div class="mt-4">
-  <%= link_to 'Manage Doctors', admin_doctors_path, class: 'btn btn-primary' %>
-  <%= link_to 'Manage Patients', admin_patients_path, class: 'btn btn-secondary' %>
-  <%#= link_to 'Manage Appointments', admin_appointments_path, class: 'btn btn-success' %>
-  <%= link_to 'Manage Medicines', admin_medicines_path, class: 'btn btn-warning' %>
-  <%= link_to 'Manage Categories', admin_categories_path, class: 'btn btn-info' %>
-  <%#= link_to 'Manage Prescriptions', admin_prescriptions_path, class: 'btn btn-dark' %>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> Admin Dashboard</title>
+  <!-- Material Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Material UI CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #f50057;
+      --success-color: #4caf50;
+      --warning-color: #ff9800;
+      --info-color: #2196f3;
+      --dark-color: #212121;
+      --light-gray: #f5f5f5;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--light-gray);
+      margin: 0;
+      padding: 0;
+    }
+    
+    .dashboard-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .dashboard-header {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+    }
+    
+    .dashboard-title {
+      color: var(--primary-color);
+      margin: 0;
+      font-weight: 500;
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .stat-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+    
+    .stat-value {
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 5px;
+    }
+    
+    .stat-label {
+      color: #757575;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .doctors-icon { color: var(--primary-color); }
+    .patients-icon { color: var(--secondary-color); }
+    .appointments-icon { color: var(--success-color); }
+    .prescriptions-icon { color: var(--warning-color); }
+    .medicines-icon { color: var(--info-color); }
+    .categories-icon { color: var(--dark-color); }
+    
+    .actions-container {
+      background-color: white;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .actions-title {
+      color: var(--primary-color);
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
+    
+    .btn-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    
+    .btn {
+      padding: 10px 16px;
+      border-radius: 4px;
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-primary { background-color: var(--primary-color); }
+    .btn-secondary { background-color: var(--secondary-color); }
+    .btn-success { background-color: var(--success-color); }
+    .btn-warning { background-color: var(--warning-color); }
+    .btn-info { background-color: var(--info-color); }
+    .btn-dark { background-color: var(--dark-color); }
+  </style>
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Admin Dashboard</h1>
+    </div>
+    
+    <div class="stats-container">
+      <div class="stat-card">
+        <div class="stat-icon doctors-icon">
+          <i class="fas fa-user-md"></i>
+        </div>
+        <div class="stat-value"><%= @doctors_count %></div>
+        <div class="stat-label">Total Doctors</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon patients-icon">
+          <i class="fas fa-users"></i>
+        </div>
+        <div class="stat-value"><%= @patients_count %></div>
+        <div class="stat-label">Total Patients</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon appointments-icon">
+          <i class="fas fa-calendar-check"></i>
+        </div>
+        <div class="stat-value"><%= @appointments_count %></div>
+        <div class="stat-label">Total Appointments</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon prescriptions-icon">
+          <i class="fas fa-prescription"></i>
+        </div>
+        <div class="stat-value"><%= @prescriptions_count %></div>
+        <div class="stat-label">Total Prescriptions</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon medicines-icon">
+          <i class="fas fa-pills"></i>
+        </div>
+        <div class="stat-value"><%= @medicines_count %></div>
+        <div class="stat-label">Total Medicines</div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="stat-icon categories-icon">
+          <i class="fas fa-th-list"></i>
+        </div>
+        <div class="stat-value"><%= @categories_count %></div>
+        <div class="stat-label">Total Categories</div>
+      </div>
+    </div>
+    
+    <div class="actions-container">
+      <h2 class="actions-title">Manage Resources</h2>
+      <div class="btn-container">
+        <%= link_to admin_doctors_path, class: 'btn btn-primary' do %>
+          <i class="fas fa-user-md"></i> Manage Doctors
+        <% end %>
+        
+        <%= link_to admin_patients_path, class: 'btn btn-secondary' do %>
+          <i class="fas fa-users"></i> Manage Patients
+        <% end %>
+        
+        <%# <%= link_to admin_appointments_path, class: 'btn btn-success' do %>
+          <%# <i class="fas fa-calendar-check"></i> Manage Appointments %>
+        <%# <% end %>
+        
+        <%= link_to admin_medicines_path, class: 'btn btn-warning' do %>
+          <i class="fas fa-pills"></i> Manage Medicines
+        <% end %>
+        
+        <%= link_to admin_categories_path, class: 'btn btn-info' do %>
+          <i class="fas fa-th-list"></i> Manage Categories
+        <% end %>
+        
+        <%# <%= link_to admin_prescriptions_path, class: 'btn btn-dark' do %>
+          <%# <i class="fas fa-prescription"></i> Manage Prescriptions %>
+        <%# <% end %>
+      </div>
+    </div>
+  </div>
+  
+  <!-- MDB JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+</body>
+</html>

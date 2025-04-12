@@ -1,39 +1,286 @@
-<h1>Manage Patients</h1>
-
-<%= link_to 'Back to Admin Dashboard', admin_root_path, class: 'btn btn-secondary mb-3' %>
-
-<table class="table">
-  <thead>
-  <tr>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Appointments Count</th>
-    <th>Registered On</th>
-    <th>Actions</th>
-  </tr>
-  </thead>
-  <tbody>
-  <% @patients.each do |patient| %>
-    <tr>
-      <td>
-        <%# Show only first initial and last name if available %>
-        <%= "#{patient.name.first.upcase}. #{patient.name.split.last if patient.name.split.size > 1}" %>
-      </td>
-      <td>
-        <%# Mask email - show only first letter, then asterisks, then domain %>
-        <% if patient.email.present? %>
-          <% local, domain = patient.email.split('@') %>
-          <%= "#{local[0]}***@#{domain}" %>
-        <% else %>
-          N/A
-        <% end %>
-      </td>
-      <td><%= patient.appointments.count %></td>
-      <td><%= patient.created_at.to_date %></td>
-      <td>
-        <%= link_to 'View Details', admin_patient_path(patient), class: 'btn btn-outline-primary btn-sm' %>
-      </td>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Management - Manage Patients</title>
+  <!-- Material Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Material UI CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #f50057;
+      --success-color: #4caf50;
+      --warning-color: #ff9800;
+      --info-color: #2196f3;
+      --dark-color: #212121;
+      --light-gray: #f5f5f5;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--light-gray);
+      margin: 0;
+      padding: 0;
+    }
+    
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .page-header {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .page-title {
+      color: var(--primary-color);
+      margin: 0;
+      font-weight: 500;
+    }
+    
+    .btn {
+      padding: 10px 16px;
+      border-radius: 4px;
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-secondary { background-color: var(--secondary-color); }
+    
+    .btn-outline-primary {
+      background-color: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .btn-outline-primary:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .custom-table th {
+      background-color: var(--primary-color);
+      color: white;
+      text-align: left;
+      padding: 15px;
+      font-weight: 500;
+    }
+    
+    .custom-table td {
+      padding: 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .custom-table tr:hover {
+      background-color: rgba(63, 81, 181, 0.05);
+    }
+    
+    .custom-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .patient-name {
+      font-weight: 500;
+    }
+    
+    .masked-email {
+      font-family: monospace;
+      color: #666;
+    }
+    
+    .appointment-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: rgba(63, 81, 181, 0.15);
+      color: var(--primary-color);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .date-badge {
+      color: #666;
+      font-size: 14px;
+    }
+    
+    .privacy-notice {
+      background-color: rgba(255, 152, 0, 0.1);
+      border-left: 4px solid var(--warning-color);
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+    }
+    
+    .privacy-notice p {
+      margin: 0;
+      color: #555;
+    }
+    
+    .patient-summary {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 20px;
+      background-color: rgba(63, 81, 181, 0.05);
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+    
+    .summary-item {
+      text-align: center;
+    }
+    
+    .summary-value {
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--primary-color);
+    }
+    
+    .summary-label {
+      font-size: 14px;
+      color: #666;
+    }
+    
+    @media (max-width: 768px) {
+      .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+      }
+      
+      .patient-summary {
+        flex-direction: column;
+        gap: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="page-header">
+      <h1 class="page-title">Manage Patients</h1>
+      <%= link_to admin_root_path, class: 'btn btn-secondary' do %>
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      <% end %>
+    </div>
+    
+    <div class="privacy-notice">
+      <p><i class="fas fa-shield-alt"></i> <strong>Privacy Notice:</strong> Patient information is partially masked to protect personal data in compliance with privacy regulations.</p>
+    </div>
+    
+    <div class="patient-summary">
+      <div class="summary-item">
+        <div class="summary-value"><%= @patients.count %></div>
+        <div class="summary-label">Registered Patients</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-value"><%= @patients.map { |p| p.appointments.count }.sum %></div>
+        <div class="summary-label">Total Appointments</div>
+      </div>
+      <div class="summary-item">
+        <div class="summary-value"><%= @patients.where("created_at >= ?", 30.days.ago).count %></div>
+        <div class="summary-label">New Patients (30 days)</div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="table-container">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th><i class="fas fa-user me-2"></i>Patient Name</th>
+              <th><i class="fas fa-envelope me-2"></i>Email</th>
+              <th><i class="fas fa-calendar-check me-2"></i>Appointments</th>
+              <th><i class="fas fa-user-clock me-2"></i>Registered On</th>
+              <th><i class="fas fa-tasks me-2"></i>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @patients.each do |patient| %>
+              <tr>
+                <td class="patient-name">
+                  <%= "#{patient.name.first.upcase}. #{patient.name.split.last if patient.name.split.size > 1}" %>
+                </td>
+                <td class="masked-email">
+                  <% if patient.email.present? %>
+                    <% local, domain = patient.email.split('@') %>
+                    <%= "#{local[0]}***@#{domain}" %>
+                  <% else %>
+                    <span class="text-muted">N/A</span>
+                  <% end %>
+                </td>
+                <td>
+                  <span class="appointment-count">
+                    <%= patient.appointments.count %>
+                  </span>
+                </td>
+                <td>
+                  <span class="date-badge">
+                    <i class="far fa-calendar-alt me-1"></i>
+                    <%= patient.created_at.to_date.strftime("%b %d, %Y") %>
+                  </span>
+                </td>
+                <td>
+                  <%= link_to admin_patient_path(patient), class: 'btn btn-outline-primary btn-sm' do %>
+                    <i class="fas fa-eye"></i> View Details
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <!-- MDB JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+</body>
+</html>

@@ -1,60 +1,299 @@
-<h1>Manage Doctors</h1>
-
-<%= link_to "Add New Doctor", new_admin_doctor_path, class: "btn btn-primary" %>
-<%= link_to 'Back to Admin Dashboard', admin_root_path, class: 'btn btn-secondary mb-3' %>
-
-<table class="table table-striped">
-  <thead>
-  <tr>
-    <th>Name</th>
-    <th>Email</th>
-    <th>Patients</th>
-    <th>Appointments</th>
-    <th>Status</th>
-    <th>Actions</th>
-  </tr>
-  </thead>
-  <tbody>
-  <% @doctors.each do |doctor| %>
-    <tr>
-      <td><%= doctor.full_name %></td>
-      <td><%= doctor.email %></td>
-      <td><%= doctor.patients.count %></td>
-      <td><%= doctor.appointments.count %></td>
-      <td>
-        <% if doctor.deleted? %>
-          <span class="text-danger">Deleted</span>
-        <% else %>
-          <span class="text-success">Active</span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Management - Manage Doctors</title>
+  <!-- Material Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+  <!-- Material UI CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --primary-color: #3f51b5;
+      --secondary-color: #f50057;
+      --success-color: #4caf50;
+      --warning-color: #ff9800;
+      --info-color: #2196f3;
+      --dark-color: #212121;
+      --light-gray: #f5f5f5;
+    }
+    
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: var(--light-gray);
+      margin: 0;
+      padding: 0;
+    }
+    
+    .page-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .page-header {
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .page-title {
+      color: var(--primary-color);
+      margin: 0;
+      font-weight: 500;
+    }
+    
+    .actions-group {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .btn {
+      padding: 10px 16px;
+      border-radius: 4px;
+      text-decoration: none;
+      color: white;
+      font-weight: 500;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+    
+    .btn:hover {
+      opacity: 0.9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-primary { background-color: var(--primary-color); }
+    .btn-secondary { background-color: var(--secondary-color); }
+    .btn-outline-primary {
+      background-color: transparent;
+      border: 1px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    .btn-outline-primary:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+    
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 14px;
+    }
+    
+    .card {
+      background-color: white;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      margin-bottom: 24px;
+    }
+    
+    .table-container {
+      overflow-x: auto;
+    }
+    
+    .custom-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .custom-table th {
+      background-color: var(--primary-color);
+      color: white;
+      text-align: left;
+      padding: 15px;
+      font-weight: 500;
+    }
+    
+    .custom-table td {
+      padding: 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .custom-table tr:hover {
+      background-color: rgba(63, 81, 181, 0.05);
+    }
+    
+    .custom-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 500;
+      display: inline-block;
+    }
+    
+    .status-active {
+      background-color: rgba(76, 175, 80, 0.15);
+      color: var(--success-color);
+    }
+    
+    .status-deleted {
+      background-color: rgba(244, 67, 54, 0.15);
+      color: #f44336;
+    }
+    
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+    }
+    
+    .analytics-card {
+      padding: 20px;
+    }
+    
+    .analytics-title {
+      color: var(--primary-color);
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .analytics-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .analytics-list li {
+      padding: 10px 0;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .analytics-list li:last-child {
+      border-bottom: none;
+    }
+    
+    .analytics-badge {
+      background-color: rgba(63, 81, 181, 0.15);
+      color: var(--primary-color);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-container">
+    <div class="page-header">
+      <h1 class="page-title">Manage Doctors</h1>
+      <div class="actions-group">
+        <%= link_to new_admin_doctor_path, class: 'btn btn-primary' do %>
+          <i class="fas fa-plus"></i> Add New Doctor
         <% end %>
-      </td>
-      <td>
-        <%= link_to "Details", admin_doctor_path(doctor), class: "btn btn-outline-primary btn-sm" %>
-      </td>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
-
-<h2>Analytics</h2>
-
-<h3>Recently Added Doctors</h3>
-<ul>
-  <% @analytics[:recently_added].each do |doc| %>
-    <li><%= doc.full_name %> (<%= doc.created_at.to_date %>)</li>
-  <% end %>
-</ul>
-
-<h3>Doctors with Most Appointments</h3>
-<ul>
-  <% @analytics[:most_appointments].each do |doc| %>
-    <li><%= doc.full_name %>: <%= doc.appointments.count %> appointments</li>
-  <% end %>
-</ul>
-
-<h3>Total Patients Per Doctor</h3>
-<ul>
-  <% @analytics[:total_patients_per_doctor].each do |name, count| %>
-    <li><%= name %>: <%= count %> patients</li>
-  <% end %>
-</ul>
+        <%= link_to admin_root_path, class: 'btn btn-secondary' do %>
+          <i class="fas fa-arrow-left"></i> Back to Dashboard
+        <% end %>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="table-container">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Doctor Name</th>
+              <th>Email</th>
+              <th>Patients</th>
+              <th>Appointments</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @doctors.each do |doctor| %>
+              <tr>
+                <td><%= doctor.full_name %></td>
+                <td><%= doctor.email %></td>
+                <td><%= doctor.patients.count %></td>
+                <td><%= doctor.appointments.count %></td>
+                <td>
+                  <% if doctor.deleted? %>
+                    <span class="status-badge status-deleted">Deleted</span>
+                  <% else %>
+                    <span class="status-badge status-active">Active</span>
+                  <% end %>
+                </td>
+                <td>
+                  <%= link_to admin_doctor_path(doctor), class: "btn btn-outline-primary btn-sm" do %>
+                    <i class="fas fa-eye"></i> Details
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    
+    <h2 class="page-title" style="margin-bottom: 20px;">Analytics</h2>
+    
+    <div class="analytics-grid">
+      <div class="card analytics-card">
+        <h3 class="analytics-title">
+          <i class="fas fa-user-plus"></i> Recently Added Doctors
+        </h3>
+        <ul class="analytics-list">
+          <% @analytics[:recently_added].each do |doc| %>
+            <li>
+              <%= doc.full_name %>
+              <span class="analytics-badge"><%= doc.created_at.to_date.strftime("%b %d, %Y") %></span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      
+      <div class="card analytics-card">
+        <h3 class="analytics-title">
+          <i class="fas fa-calendar-check"></i> Doctors with Most Appointments
+        </h3>
+        <ul class="analytics-list">
+          <% @analytics[:most_appointments].each do |doc| %>
+            <li>
+              <%= doc.full_name %>
+              <span class="analytics-badge"><%= doc.appointments.count %> appointments</span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+      
+      <div class="card analytics-card">
+        <h3 class="analytics-title">
+          <i class="fas fa-users"></i> Total Patients Per Doctor
+        </h3>
+        <ul class="analytics-list">
+          <% @analytics[:total_patients_per_doctor].each do |name, count| %>
+            <li>
+              <%= name %>
+              <span class="analytics-badge"><%= count %> patients</span>
+            </li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- MDB JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/6.4.0/mdb.min.js"></script>
+</body>
+</html>
