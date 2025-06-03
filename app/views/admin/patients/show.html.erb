@@ -1,85 +1,520 @@
-<h1>Patient Details</h1>
-
-<%= link_to 'Back to Patients List', admin_patients_path, class: 'btn btn-outline-secondary mb-3' %>
-<%= link_to 'Back to Admin Dashboard', admin_root_path, class: 'btn btn-secondary mb-3 ms-2' %>
-
-<hr>
-
-<% if flash[:alert] %>
-  <div class="alert alert-danger"><%= flash[:alert] %></div>
-<% elsif flash[:notice] %>
-  <div class="alert alert-success"><%= flash[:notice] %></div>
-<% end %>
-
-<h3>Basic Information</h3>
-
-<% if @authenticated %>
-  <div id="sensitive-info">
-    <table class="table table-striped">
-      <tr>
-        <th>Name</th>
-        <td><%= @patient.name %></td>
-      </tr>
-      <tr>
-        <th>Email</th>
-        <td><%=@patient.email %></td>
-      </tr>
-      <tr>
-        <th>Registered On</th>
-        <td><%= @patient.created_at.to_date %></td>
-      </tr>
-    </table>
-
-    <%= button_to "Lock Details", lock_admin_patient_path(@patient), method: :post, class: "btn btn-danger", form_class: "d-inline" %>
+<div class="patient-details-container">
+  <div class="page-header">
+    <h1 class="page-title">Patient Details</h1>
+    <div class="header-actions">
+      <%= link_to 'Back to Patients List', admin_patients_path, class: 'action-btn secondary' %>
+      <%= link_to 'Back to Admin Dashboard', admin_root_path, class: 'action-btn secondary' %>
+    </div>
   </div>
 
-  <script>
-      setTimeout(() => {
-          document.querySelector("form[action*='lock']").submit();
-      }, 10000); // 10 seconds
-  </script>
-<% else %>
-  <p class="text-muted">Sensitive information is hidden. Enter admin password to unlock.</p>
-
-  <%= form_with url: authenticate_admin_patient_path(@patient), method: :post, local: true do |form| %>
-    <div class="mb-3">
-      <%= form.label :admin_password, "Admin Password" %>
-      <%= form.password_field :admin_password, class: "form-control", required: true %>
+  <!-- Flash Messages -->
+  <% if flash[:alert] %>
+    <div class="alert error">
+      <span class="alert-icon">⚠️</span>
+      <span class="alert-message"><%= flash[:alert] %></span>
     </div>
-    <%= form.submit "Unlock", class: "btn btn-warning" %>
+  <% elsif flash[:notice] %>
+    <div class="alert success">
+      <span class="alert-icon">✅</span>
+      <span class="alert-message"><%= flash[:notice] %></span>
+    </div>
   <% end %>
-<% end %>
 
-<hr>
+  <!-- Basic Information Section -->
+  <div class="info-card">
+    <div class="card-header">
+      <h3 class="card-title">
+        <span class="section-icon">👤</span>
+        Basic Information
+      </h3>
+      <% if @authenticated %>
+        <div class="security-indicator active">
+          <span class="security-icon">🔓</span>
+          <span>Unlocked</span>
+        </div>
+      <% else %>
+        <div class="security-indicator locked">
+          <span class="security-icon">🔒</span>
+          <span>Locked</span>
+        </div>
+      <% end %>
+    </div>
 
-<h3>Appointment History</h3>
+    <% if @authenticated %>
+      <div id="sensitive-info" class="card-content">
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="info-label">Name</span>
+            <span class="info-value"><%= @patient.name %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Email</span>
+            <span class="info-value"><%= @patient.email %></span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Registered On</span>
+            <span class="info-value"><%= @patient.created_at.to_date %></span>
+          </div>
+        </div>
+        
+        <div class="lock-section">
+          <%= button_to "Lock Details", lock_admin_patient_path(@patient), 
+              method: :post, class: "lock-btn", form_class: "d-inline" %>
+          <span class="auto-lock-info">Auto-locks in <span id="countdown">10</span> seconds</span>
+        </div>
+      </div>
 
-<% if @patient.appointments.any? %>
-  <table class="table table-bordered">
-    <thead>
-    <tr>
-      <th>Doctor</th>
-      <th>Date</th>
-    </tr>
-    </thead>
-    <tbody>
-    <% @patient.appointments.includes(:doctor).order(created_at: :desc).each do |appt| %>
-      <tr>
-        <td><%= appt.doctor.full_name %></td>
-        <td><%= appt.created_at.to_date %></td>
-      </tr>
+      <script>
+        let timeLeft = 10;
+        const countdownElement = document.getElementById('countdown');
+        
+        const timer = setInterval(() => {
+          timeLeft--;
+          if (countdownElement) {
+            countdownElement.textContent = timeLeft;
+          }
+          if (timeLeft <= 0) {
+            clearInterval(timer);
+            document.querySelector("form[action*='lock']").submit();
+          }
+        }, 1000);
+      </script>
+    <% else %>
+      <div class="card-content">
+        <div class="locked-state">
+          <div class="locked-icon">🔐</div>
+          <p class="locked-message">Sensitive information is hidden for security.</p>
+          <p class="locked-subtitle">Enter admin password to unlock patient details.</p>
+        </div>
+
+        <%= form_with url: authenticate_admin_patient_path(@patient), method: :post, 
+            local: true, class: "unlock-form" do |form| %>
+          <div class="form-field">
+            <%= form.label :admin_password, "Admin Password", class: "form-label" %>
+            <%= form.password_field :admin_password, class: "form-input", 
+                placeholder: "Enter admin password", required: true %>
+          </div>
+          <%= form.submit "Unlock Details", class: "unlock-btn" %>
+        <% end %>
+      </div>
     <% end %>
-    </tbody>
-  </table>
-<% else %>
-  <p>No appointments found for this patient.</p>
-<% end %>
+  </div>
 
-<hr>
+  <!-- Appointment History Section -->
+  <div class="info-card">
+    <div class="card-header">
+      <h3 class="card-title">
+        <span class="section-icon">📅</span>
+        Appointment History
+      </h3>
+    </div>
+    
+    <div class="card-content">
+      <% if @patient.appointments.any? %>
+        <div class="appointments-table">
+          <div class="table-header">
+            <div class="table-cell">Doctor</div>
+            <div class="table-cell">Date</div>
+          </div>
+          <% @patient.appointments.includes(:doctor).order(created_at: :desc).each do |appt| %>
+            <div class="table-row">
+              <div class="table-cell">
+                <span class="doctor-name"><%= appt.doctor.full_name %></span>
+              </div>
+              <div class="table-cell">
+                <span class="appointment-date"><%= appt.created_at.to_date %></span>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <div class="empty-state">
+          <div class="empty-icon">📋</div>
+          <p>No appointments found for this patient.</p>
+        </div>
+      <% end %>
+    </div>
+  </div>
 
-<h3>Analytics & Stats</h3>
-<ul>
-  <li><strong>Total Appointments:</strong> <%= @patient.appointments.count %></li>
-  <li><strong>Associated Doctors:</strong> <%= @patient.doctors.uniq.count %></li>
-  <li><strong>Last Seen:</strong> <%= @patient.updated_at.to_date %></li>
-</ul>
+  <!-- Analytics & Stats Section -->
+  <div class="info-card">
+    <div class="card-header">
+      <h3 class="card-title">
+        <span class="section-icon">📊</span>
+        Analytics & Stats
+      </h3>
+    </div>
+    
+    <div class="card-content">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-number"><%= @patient.appointments.count %></div>
+          <div class="stat-label">Total Appointments</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number"><%= @patient.doctors.uniq.count %></div>
+          <div class="stat-label">Associated Doctors</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number"><%= @patient.updated_at.to_date %></div>
+          <div class="stat-label">Last Seen</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Material UI inspired styles */
+  body {
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: rgba(0, 0, 0, 0.87);
+    margin: 0;
+    padding: 20px;
+  }
+
+  .patient-details-container {
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .page-title {
+    color: #1976d2;
+    font-weight: 400;
+    margin: 0;
+    font-size: 28px;
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.3s;
+    border: 1px solid #dadce0;
+    background-color: transparent;
+    color: #5f6368;
+  }
+
+  .action-btn:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  /* Alert styles */
+  .alert {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    gap: 8px;
+  }
+
+  .alert.success {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+    border-left: 4px solid #4caf50;
+  }
+
+  .alert.error {
+    background-color: #ffebee;
+    color: #c62828;
+    border-left: 4px solid #f44336;
+  }
+
+  /* Card styles */
+  .info-card {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 20px 24px;
+    background-color: #fafafa;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.87);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-icon {
+    font-size: 20px;
+  }
+
+  .security-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 12px;
+  }
+
+  .security-indicator.active {
+    background-color: #e8f5e8;
+    color: #2e7d32;
+  }
+
+  .security-indicator.locked {
+    background-color: #ffebee;
+    color: #c62828;
+  }
+
+  .card-content {
+    padding: 24px;
+  }
+
+  /* Information grid */
+  .info-grid {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .info-label {
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .info-value {
+    color: rgba(0, 0, 0, 0.87);
+  }
+
+  /* Lock section */
+  .lock-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .lock-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+
+  .lock-btn:hover {
+    background-color: #d32f2f;
+  }
+
+  .auto-lock-info {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  /* Locked state */
+  .locked-state {
+    text-align: center;
+    padding: 32px 0;
+  }
+
+  .locked-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  .locked-message {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.87);
+    margin-bottom: 8px;
+  }
+
+  .locked-subtitle {
+    color: rgba(0, 0, 0, 0.6);
+    margin-bottom: 24px;
+  }
+
+  .unlock-form {
+    max-width: 300px;
+    margin: 0 auto;
+  }
+
+  .form-field {
+    margin-bottom: 16px;
+  }
+
+  .form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: rgba(0, 0, 0, 0.6);
+    font-weight: 500;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #1976d2;
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+  }
+
+  .unlock-btn {
+    width: 100%;
+    background-color: #ff9800;
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .unlock-btn:hover {
+    background-color: #f57c00;
+  }
+
+  /* Appointments table */
+  .appointments-table {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .table-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    background-color: #f8f9fa;
+    font-weight: 500;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .table-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-bottom: 1px solid #f0f0f0;
+  }
+
+  .table-row:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+
+  .table-cell {
+    padding: 12px 16px;
+  }
+
+  .doctor-name {
+    font-weight: 500;
+  }
+
+  .appointment-date {
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 32px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .empty-icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+
+  /* Stats grid */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+  }
+
+  .stat-item {
+    text-align: center;
+    padding: 16px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+  }
+
+  .stat-number {
+    font-size: 24px;
+    font-weight: 500;
+    color: #1976d2;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+  }
+
+  /* Responsive design */
+  @media screen and (max-width: 768px) {
+    .page-header {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    
+    .header-actions {
+      justify-content: center;
+    }
+    
+    .lock-section {
+      flex-direction: column;
+      gap: 12px;
+      text-align: center;
+    }
+    
+    .table-header, .table-row {
+      grid-template-columns: 1fr;
+    }
+    
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

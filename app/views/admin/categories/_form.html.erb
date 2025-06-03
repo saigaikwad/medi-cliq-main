@@ -1,19 +1,287 @@
-<%= form_with model: [:admin, category], local: true, class: 'needs-validation' do |f| %>
-  <% if category.errors.any? %>
-    <div class="alert alert-danger">
-      <h4><%= pluralize(category.errors.count, "error") %> prevented this category from being saved:</h4>
-      <ul>
-        <% category.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="mb-3">
-    <%= f.label :name, class: 'form-label' %>
-    <%= f.text_field :name, class: 'form-control', placeholder: 'e.g., Antibiotics', required: true %>
+<div class="form-container">
+  <div class="form-header">
+    <h2 class="form-title">
+      <span class="form-icon">📁</span>
+      <%= category.new_record? ? 'Create New Category' : 'Edit Category' %>
+    </h2>
   </div>
 
-  <%= f.submit category.new_record? ? 'Create Category' : 'Update Category', class: 'btn btn-primary' %>
-<% end %>
+  <%= form_with model: [:admin, category], local: true, class: 'category-form' do |f| %>
+    <% if category.errors.any? %>
+      <div class="error-container">
+        <div class="error-header">
+          <span class="error-icon">⚠️</span>
+          <h4 class="error-title">
+            <%= pluralize(category.errors.count, "error") %> prevented this category from being saved:
+          </h4>
+        </div>
+        <ul class="error-list">
+          <% category.errors.full_messages.each do |message| %>
+            <li class="error-item"><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="form-field">
+      <%= f.label :name, class: 'field-label' %>
+      <div class="input-container">
+        <%= f.text_field :name, class: 'field-input', 
+            placeholder: 'e.g., Antibiotics, Pain Relief, Vitamins', 
+            required: true %>
+        <div class="input-border"></div>
+      </div>
+      <div class="field-helper">Enter a descriptive name for the category</div>
+    </div>
+
+    <div class="form-actions">
+      <%= f.submit category.new_record? ? 'Create Category' : 'Update Category', 
+          class: 'submit-btn primary' %>
+      <%= link_to 'Cancel', admin_categories_path, class: 'submit-btn secondary' %>
+    </div>
+  <% end %>
+</div>
+
+<style>
+  /* Material UI inspired styles */
+  body {
+    font-family: 'Roboto', 'Helvetica', 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: rgba(0, 0, 0, 0.87);
+    margin: 0;
+    padding: 20px;
+  }
+
+  .form-container {
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .form-header {
+    background-color: #1976d2;
+    color: white;
+    padding: 24px;
+    text-align: center;
+  }
+
+  .form-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .form-icon {
+    font-size: 28px;
+  }
+
+  .category-form {
+    padding: 32px;
+  }
+
+  /* Error handling */
+  .error-container {
+    background-color: #ffebee;
+    border: 1px solid #f44336;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+
+  .error-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .error-icon {
+    font-size: 20px;
+    margin-top: 2px;
+  }
+
+  .error-title {
+    margin: 0;
+    color: #c62828;
+    font-size: 16px;
+    font-weight: 500;
+  }
+
+  .error-list {
+    margin: 0;
+    padding-left: 32px;
+    color: #c62828;
+  }
+
+  .error-item {
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+
+  /* Form field styling */
+  .form-field {
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .field-label {
+    display: block;
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    transition: color 0.3s;
+  }
+
+  .input-container {
+    position: relative;
+  }
+
+  .field-input {
+    width: 100%;
+    padding: 16px 12px;
+    font-size: 16px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: transparent;
+    transition: all 0.3s;
+    box-sizing: border-box;
+  }
+
+  .field-input:focus {
+    outline: none;
+    border-color: #1976d2;
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+  }
+
+  .field-input:focus + .input-border {
+    transform: scaleX(1);
+  }
+
+  .field-input:focus ~ .field-label,
+  .field-input:not(:placeholder-shown) ~ .field-label {
+    color: #1976d2;
+  }
+
+  .input-border {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 2px;
+    width: 100%;
+    background-color: #1976d2;
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+
+  .field-helper {
+    margin-top: 8px;
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  /* Form actions */
+  .form-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    padding-top: 24px;
+    border-top: 1px solid #f0f0f0;
+  }
+
+  .submit-btn {
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    min-width: 120px;
+  }
+
+  .submit-btn.primary {
+    background-color: #1976d2;
+    color: white;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  }
+
+  .submit-btn.primary:hover {
+    background-color: #115293;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  .submit-btn.secondary {
+    background-color: transparent;
+    color: #5f6368;
+    border: 1px solid #dadce0;
+  }
+
+  .submit-btn.secondary:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+
+  /* Animation for form appearance */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .form-container {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  /* Responsive design */
+  @media screen and (max-width: 768px) {
+    .form-container {
+      margin: 0 16px;
+    }
+    
+    .category-form {
+      padding: 24px;
+    }
+    
+    .form-actions {
+      flex-direction: column-reverse;
+    }
+    
+    .submit-btn {
+      width: 100%;
+    }
+    
+    .form-title {
+      font-size: 20px;
+    }
+  }
+
+  /* Focus states and accessibility */
+  .submit-btn:focus {
+    outline: 2px solid #1976d2;
+    outline-offset: 2px;
+  }
+
+  .field-input:invalid {
+    border-color: #f44336;
+  }
+
+  .field-input:invalid:focus {
+    box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.2);
+  }
+</style>
