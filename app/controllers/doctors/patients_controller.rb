@@ -20,6 +20,24 @@ class Doctors::PatientsController < ApplicationController
   
 
   def create
+    # Check if a patient with the given email already exists
+    existing_patient = Patient.find_by(email: patient_params[:email])
+  
+    if existing_patient
+      # Use the existing patient
+      @patient = existing_patient
+  
+      # Build a new prescription and assign attributes
+      prescription = @patient.prescriptions.build(patient_params[:prescriptions_attributes].values.first)
+      prescription.doctor_id = current_doctor.id
+  
+      if prescription.save
+        redirect_to prescription_path(prescription), notice: "Existing patient found. Prescription added successfully!"
+      else
+        flash[:alert] = prescription.errors.full_messages.join(", ")
+        render :new
+      end
+    else
     generated_password = SecureRandom.hex(8) # Generate a random password
     @patient = Patient.new(patient_params)
     @patient.doctor_id = current_doctor.id
@@ -43,7 +61,9 @@ class Doctors::PatientsController < ApplicationController
       flash[:alert] = @patient.errors.full_messages.join(", ") 
       render :new
     end
+    end
   end
+  
   
 
   private
