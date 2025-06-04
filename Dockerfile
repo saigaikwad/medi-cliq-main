@@ -1,5 +1,5 @@
 # Base image
-FROM ruby:3.3
+FROM ruby:3.3.4
 
 # Set working directory
 WORKDIR /app
@@ -13,7 +13,8 @@ RUN apt-get update -qq && apt-get install -y \
   curl
 
 # Install bundler
-RUN gem install bundler
+RUN gem install bundler -v 2.5.18
+
 
 # Copy Gemfiles and install gems
 COPY Gemfile Gemfile.lock ./
