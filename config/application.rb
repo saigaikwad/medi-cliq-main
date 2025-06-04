@@ -1,3 +1,5 @@
+require "bundler/setup"
+
 require_relative "boot"
 
 require "rails/all"
