@@ -62,15 +62,11 @@
                 </span>
               </td>
               <td class="action-cell">
-                <% if appointment.status == "confirmed" %>
-                  <a href="<%= video_call_path(appointment) %>" class="mui-btn mui-btn--primary mui-btn--raised video-call-btn">
-                    <i class="mui-icon btn-icon">videocam</i> Join Video Call
-                  </a>
-                <% else %>
-                  <span class="waiting-text">
-                    <i class="mui-icon status-icon">hourglass_empty</i> Awaiting Confirmation
-                  </span>
-                <% end %>
+              <% if appointment.status == "confirmed" && appointment.video_call_link.present? %>
+  <%= link_to "Join Video Call", start_video_call_appointment_path(appointment), class: "btn btn-success" %>
+<% else %>
+  <span class="text-muted">Video call not available</span>
+<% end %>
               </td>
             </tr>
           <% end %>

@@ -42,7 +42,10 @@ class AppointmentsController < ApplicationController
   end
 
   def confirm
-    if @appointment.update(status: "confirmed")
+    room_name = "video_call_#{@appointment.id}" # unique per appointment
+    video_link = "https://meet.jit.si/#{room_name}" # or Zoom/Jitsi/WebRTC link
+  
+    if @appointment.update(status: "confirmed", video_call_link: video_link)
       respond_to do |format|
         format.html { redirect_to appointments_path, notice: "Appointment confirmed successfully." }
         format.js
@@ -51,6 +54,7 @@ class AppointmentsController < ApplicationController
       redirect_to appointments_path, alert: "Failed to update appointment."
     end
   end
+  
 
   def cancel
     if @appointment.update(status: "cancelled")
@@ -64,18 +68,14 @@ class AppointmentsController < ApplicationController
   end
 
   def start_video_call
-    Rails.logger.debug "Start Video Call Params ID: #{params[:id]}"
-  
-    @appointment = Appointment.find_by(id: params[:id])
-  
-    if @appointment
-      Rails.logger.debug "Appointment Found: #{@appointment.inspect}"
-      @room_name = "video_call_#{@appointment.id}"
+    if @appointment.video_call_link.present?
+      redirect_to @appointment.video_call_link, allow_other_host: true
     else
-      Rails.logger.debug "Appointment Not Found for ID: #{params[:id]}"
-      redirect_to appointments_path, alert: "Appointment not found."
+      redirect_to appointments_path, alert: "Video call link is not available yet."
     end
   end
+  
+  
   
 
   private
