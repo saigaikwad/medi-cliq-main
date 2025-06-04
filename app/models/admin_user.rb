@@ -5,4 +5,8 @@ class AdminUser < ApplicationRecord
          :recoverable, :rememberable, :validatable
 
   validates :email, presence: true, uniqueness: true
+
+  def inspect
+    "#<AdminUser id: #{id}, email: #{email}>"
+  end
 end
