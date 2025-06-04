@@ -47,6 +47,24 @@ Rails.application.configure do
   # Assume all access to the app is happening through a SSL-terminating reverse proxy.
   # Can be used together with config.force_ssl for Strict-Transport-Security and secure cookies.
   # config.assume_ssl = true
+  # config/environments/production.rb
+config.action_mailer.raise_delivery_errors = true
+config.action_mailer.perform_caching = false
+config.action_mailer.delivery_method = :smtp
+
+config.action_mailer.smtp_settings = {
+  address: "smtp.gmail.com",
+  port: 587,
+  domain: "gmail.com",
+  user_name: "saigaikwad936@gmail.com",
+  password: "cchr ywwk ggxh xtcl", # Use the 16-character App Password
+  tls_version: "TLSv1_2",
+  authentication: "plain",
+  enable_starttls_auto: true,
+}
+
+# Set your host
+config.action_mailer.default_url_options = { host: 'https://loving-freedom-production.up.railway.app/', protocol: 'https' }
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = true
