@@ -1,63 +1,63 @@
-# Use official Ruby slim image
+# syntax=docker/dockerfile:1
+
+# --- Base image with Ruby ---
 ARG RUBY_VERSION=3.3.4
 FROM ruby:$RUBY_VERSION-slim as base
 
 WORKDIR /rails
 
 ENV RAILS_ENV=production \
-    BUNDLE_PATH=/usr/local/bundle \
-    BUNDLE_WITHOUT=development:test \
-    BUNDLE_DEPLOYMENT=true
+    BUNDLE_DEPLOYMENT=true \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development test"
 
-# Install system dependencies needed for Rails and gems with native extensions
-RUN apt-get update -qq && apt-get install -y --no-install-recommends \
-    build-essential \
-    git \
-    libpq-dev \
-    nodejs \
-    yarn \
-    libvips-dev \
-    pkg-config \
-    sqlite3 \
-    && rm -rf /var/lib/apt/lists/*
+# --- Build stage ---
+FROM base as build
 
-# Copy Gemfiles early for caching
-COPY Gemfile Gemfile.lock ./
+# Install dependencies
+RUN apt-get update -qq && apt-get install --no-install-recommends -y \
+  build-essential \
+  libvips \
+  git \
+  nodejs \
+  yarn \
+  pkg-config
 
 # Install gems
-RUN bundle install --jobs 4 --retry 3 && \
-    rm -rf ~/.bundle "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
 
-# Copy app source
+# Copy all app code
 COPY . .
 
-# Precompile bootsnap (optional, can comment if error persists)
+# Precompile bootsnap and assets
 RUN bundle exec bootsnap precompile --gemfile
-
-# Precompile assets (provide dummy secret key base)
 RUN SECRET_KEY_BASE=dummy ./bin/rails assets:precompile
 
-# Final image
+# --- Final production image ---
 FROM base
 
-# Install runtime dependencies
-RUN apt-get update -qq && apt-get install -y --no-install-recommends \
-    libpq5 \
-    nodejs \
-    yarn \
-    libvips42 \
-    sqlite3 \
-    && rm -rf /var/lib/apt/lists/*
+# Only required runtime packages
+RUN apt-get update -qq && apt-get install --no-install-recommends -y \
+  curl \
+  libsqlite3-0 \
+  libvips \
+  nodejs \
+  yarn && \
+  rm -rf /var/lib/apt/lists/*
 
-COPY --from=base /usr/local/bundle /usr/local/bundle
-COPY --from=base /rails /rails
+# Copy installed gems and compiled app from build stage
+COPY --from=build /usr/local/bundle /usr/local/bundle
+COPY --from=build /rails /rails
 
-RUN useradd -m rails && chown -R rails:rails /rails
-
+# Create non-root user and set permissions
+RUN useradd rails --create-home --shell /bin/bash && \
+    chown -R rails:rails /rails
 USER rails
-WORKDIR /rails
 
+# Entry point
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+
+# Run server by default
 EXPOSE 3000
-
-ENTRYPOINT ["./bin/docker-entrypoint"]
-CMD ["./bin/rails", "server", "-b", "0.0.0.0"]
+CMD ["./bin/rails", "server"]
