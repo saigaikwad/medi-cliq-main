@@ -52,7 +52,7 @@
               <span class="sort-icon">▼</span>
             </div>
           </th>
-          <th class="MuiTableCell-root MuiTableCell-head">Actions</th>
+          
         </tr>
       </thead>
       <tbody class="MuiTableBody-root">
@@ -64,13 +64,7 @@
             <td class="MuiTableCell-root MuiTableCell-body"><%= patient.name %></td>
             <td class="MuiTableCell-root MuiTableCell-body"><%= patient.age %></td>
             <td class="MuiTableCell-root MuiTableCell-body"><%= patient.gender %></td>
-            <td class="MuiTableCell-root MuiTableCell-body actions-cell">
-              <%= link_to doctor_patients_path(current_doctor, patient), class: "MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButton-outlinedPrimary view-button" do %>
-                <span class="MuiButton-label">View</span>
-              <% end %>
-              
-             
-            </td>
+          
           </tr>
         <% end %>
       </tbody>

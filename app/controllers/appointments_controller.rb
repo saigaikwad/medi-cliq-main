@@ -5,6 +5,7 @@ class AppointmentsController < ApplicationController
 
   def new
     @appointment = Appointment.new
+    @doctors = current_patient.doctors.distinct
   end
 
   def create

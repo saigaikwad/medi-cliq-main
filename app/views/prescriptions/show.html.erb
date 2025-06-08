@@ -76,53 +76,67 @@
   }
 </style>
 
-<div class="mdl-layout mdl-js-layout">
-  <main class="mdl-layout__content">
-    <div class="prescription-card mdl-card">
-      <div class="prescription-header">
-        <h2 class="mdl-card__title-text">Prescription Details</h2>
-      </div>
-      
-      <div class="prescription-detail">
-        <div class="detail-label">Patient:</div>
-        <div class="detail-value"><%= @prescription.patient.name %></div>
-      </div>
-      
-      <div class="prescription-detail">
-        <div class="detail-label">Doctor:</div>
-        <div class="detail-value"><%= @prescription.doctor.first_name %></div>
-      </div>
-      
-      <div class="prescription-detail">
-        <div class="detail-label">Medicine:</div>
-        <div class="detail-value"><%= @prescription.medicine.name %></div>
-      </div>
-      
-      <div class="prescription-detail">
-        <div class="detail-label">Quantity:</div>
-        <div class="detail-value"><%= @prescription.prescription_quantity %></div>
-      </div>
-      
-      <div class="prescription-detail">
-        <div class="detail-label">Duration:</div>
-        <div class="detail-value"><%= @prescription.duration %> days</div>
-      </div>
-      
-      <div class="prescription-detail">
-        <div class="detail-label">Dosage:</div>
-        <div class="detail-value"><%= @prescription.dosage_description %></div>
-      </div>
-      
-      <% if @prescription.qr.present? %>
-      <div class="prescription-detail">
-        <div class="detail-label">QR Code:</div>
-        <div class="qr-container">
-          <%= raw @prescription.qr.qr_code %>
+<% if @prescription.created_at >= 10.days.ago %>
+  <!-- Your existing prescription card HTML -->
+  <div class="mdl-layout mdl-js-layout">
+    <main class="mdl-layout__content">
+      <div class="prescription-card mdl-card">
+        <div class="prescription-header">
+          <h2 class="mdl-card__title-text">Prescription Details</h2>
         </div>
+
+        <div class="prescription-detail">
+          <div class="detail-label">Patient:</div>
+          <div class="detail-value"><%= @prescription.patient.name %></div>
+        </div>
+
+        <div class="prescription-detail">
+          <div class="detail-label">Doctor:</div>
+          <div class="detail-value"><%= @prescription.doctor.first_name %></div>
+        </div>
+
+        <div class="prescription-detail">
+          <div class="detail-label">Medicine:</div>
+          <div class="detail-value"><%= @prescription.medicine.name %></div>
+        </div>
+
+        <div class="prescription-detail">
+          <div class="detail-label">Quantity:</div>
+          <div class="detail-value"><%= @prescription.prescription_quantity %></div>
+        </div>
+
+        <div class="prescription-detail">
+          <div class="detail-label">Duration:</div>
+          <div class="detail-value"><%= @prescription.duration %> days</div>
+        </div>
+
+        <div class="prescription-detail">
+          <div class="detail-label">Dosage:</div>
+          <div class="detail-value"><%= @prescription.dosage_description %></div>
+        </div>
+
+        <% if @prescription.qr.present? %>
+          <div class="prescription-detail">
+            <div class="detail-label">QR Code:</div>
+            <div class="qr-container">
+              <%= raw @prescription.qr.qr_code %>
+            </div>
+          </div>
+        <% end %>
+
+        <%= link_to "Back to Prescriptions", prescriptions_path, class: "back-button mdl-button mdl-js-button" %>
       </div>
-      <% end %>
-      
-      <%= link_to "Back to Prescriptions", prescriptions_path, class: "back-button mdl-button mdl-js-button" %>
-    </div>
-  </main>
-</div>
+    </main>
+  </div>
+<% else %>
+  <!-- Expired Message -->
+  <div class="mdl-layout mdl-js-layout">
+    <main class="mdl-layout__content">
+      <div class="prescription-card mdl-card" style="text-align: center;">
+        <h2 class="mdl-card__title-text" style="color: red;">This prescription has expired.</h2>
+        <p>Prescriptions are only valid for 10 days.</p>
+        <%= link_to "Back to Prescriptions", prescriptions_path, class: "back-button mdl-button mdl-js-button" %>
+      </div>
+    </main>
+  </div>
+<% end %>

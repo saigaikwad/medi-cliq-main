@@ -30,6 +30,11 @@
           <div style="color: #757575; font-size: 14px;">Form</div>
           <div style="color: #212121; font-size: 16px;"><%= @medicine.form %></div>
         </div>
+
+         <div style="margin-bottom: 12px;">
+          <div style="color: #757575; font-size: 14px;">Quantity</div>
+          <div style="color: #212121; font-size: 16px;"><%= @medicine.quantity %></div>
+        </div>
         <div style="margin-bottom: 12px;">
           <div style="color: #757575; font-size: 14px;">Category</div>
           <div style="color: #212121; font-size: 16px;"><%= @medicine.category.name %></div>
@@ -70,15 +75,10 @@
         <i class="material-icons" style="margin-right: 5px;">arrow_back</i> Back to Medicines
       <% end %>
     </div>
-    <div style="display: flex; gap: 10px;">
-      <%= link_to edit_medicine_path(@medicine), class: "mui-btn mui-btn--raised" do %>
-        <i class="material-icons" style="margin-right: 5px;">edit</i> Edit
-      <% end %>
-      
-      <%= button_to @medicine, method: :delete, class: "mui-btn mui-btn--raised mui-btn--danger", style: "background-color: #f44336; color: white; display: inline-flex; align-items: center;", data: { confirm: "Are you sure you want to delete this medicine?" } do %>
-        <i class="material-icons" style="margin-right: 5px;">delete</i> Delete
-      <% end %>
-    </div>
+
+
+    
+  
   </div>
 </div>
 
