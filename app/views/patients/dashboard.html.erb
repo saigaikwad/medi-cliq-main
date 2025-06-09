@@ -62,11 +62,12 @@
                 </span>
               </td>
               <td class="action-cell">
-              <% if appointment.status == "confirmed" && appointment.video_call_link.present? %>
-  <%= link_to "Join Video Call", start_video_call_appointment_path(appointment), class: "btn btn-success" %>
+         <% if appointment.status == "confirmed" && appointment.video_call_link.present? %>
+  <%= link_to "Join Video Call", start_video_call_appointment_path(appointment), class: "btn btn-success join-video-call-btn", data: { appointment_id: appointment.id } %>
 <% else %>
   <span class="text-muted">Video call not available</span>
 <% end %>
+
               </td>
             </tr>
           <% end %>
@@ -592,3 +593,35 @@
     }
   }
 </style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Check on load if video call button should be hidden
+    document.querySelectorAll('.join-video-call-btn').forEach(function(button) {
+      const appointmentId = button.dataset.appointmentId;
+      const storedTimestamp = localStorage.getItem('video_call_clicked_at_' + appointmentId);
+      
+      if (storedTimestamp) {
+        const clickedTime = new Date(parseInt(storedTimestamp));
+        const now = new Date();
+        const diffInMinutes = (now - clickedTime) / 60000; // ms to minutes
+        
+        if (diffInMinutes > 10) {
+          // Hide button or replace with expired message
+          const span = document.createElement('span');
+          span.className = 'text-muted';
+          span.textContent = 'Video call expired';
+          button.parentNode.replaceChild(span, button);
+        }
+      }
+    });
+
+    // When user clicks the button, store timestamp
+    document.querySelectorAll('.join-video-call-btn').forEach(function(button) {
+      button.addEventListener('click', function() {
+        const appointmentId = this.dataset.appointmentId;
+        localStorage.setItem('video_call_clicked_at_' + appointmentId, Date.now());
+      });
+    });
+  });
+</script>

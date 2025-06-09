@@ -92,6 +92,6 @@ Rails.application.routes.draw do
 
     resources :appointments
     resources :prescriptions
-    resources :categories, except: [:show]
+    resources :categories
   end
 end

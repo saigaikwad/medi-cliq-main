@@ -11,6 +11,9 @@ gem "sprockets-rails"
 # Use sqlite3 as the database for Active Record
 gem "pg"
 
+gem 'paranoia', '~> 2.6'
+
+
 gem "devise"
 
 # Use the Puma web server [https://github.com/puma/puma]

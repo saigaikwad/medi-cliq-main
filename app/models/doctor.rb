@@ -1,4 +1,5 @@
 class Doctor < ApplicationRecord
+  acts_as_paranoid
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :validatable
  
   has_many :appointments
@@ -10,10 +11,12 @@ class Doctor < ApplicationRecord
   validates :phone_number, numericality: { only_integer: true }, length: { is: 10 }
 
   scope :active, -> { where(deleted_at: nil) }
+ # app/models/doctor.rb
 
   def soft_delete!
     update(deleted_at: Time.current)
   end
+  
 
   def deleted?
     deleted_at.present?

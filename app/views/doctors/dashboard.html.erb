@@ -50,7 +50,16 @@
 <div class="mui-container custom-main-content">
   <div class="page-header">
     <h2 class="mui--text-headline page-title">Appointments</h2>
-    
+  </div>
+
+  <!-- Status Filter -->
+  <div class="filter-bar" style="margin-bottom: 15px; display: flex; align-items: center; gap: 10px;">
+    <label for="statusFilter">Filter by Status:</label>
+    <select id="statusFilter" class="filter-dropdown" style="padding: 6px 12px; border-radius: 6px; border: 1px solid #ccc;">
+      <option value="">All</option>
+      <option value="Confirmed">Confirmed</option>
+      <option value="Pending">Pending</option>
+    </select>
   </div>
 
   <div class="mui-panel custom-card-table">
@@ -62,7 +71,6 @@
             <th>Date</th>
             <th>Time</th>
             <th>Status</th>
-          
           </tr>
         </thead>
         <tbody>
@@ -86,7 +94,6 @@
                   <%= appointment.status.capitalize %>
                 </span>
               </td>
-            
             </tr>
           <% end %>
         </tbody>
@@ -108,16 +115,13 @@
 <!-- DataTables Initialization -->
 <script>
   $(document).ready(function() {
-    $('#appointmentsTable').DataTable({
+    var table = $('#appointmentsTable').DataTable({
       "paging": true,
       "searching": true,
       "ordering": true,
       "info": true,
       "responsive": true,
       "order": [[1, "asc"], [2, "asc"]],
-      "columnDefs": [
-        { "orderable": false, "targets": [4] }
-      ],
       "language": {
         "search": "Find appointment:",
         "paginate": {
@@ -129,11 +133,18 @@
       },
       "dom": '<"top"lf>rt<"bottom"ip>'
     });
-    
+
+    // Status filter
+    $('#statusFilter').on('change', function () {
+      var selectedStatus = $(this).val().toLowerCase();
+      table.column(3).search(selectedStatus).draw();
+    });
+
     // Add responsive class to DataTables wrapper
     $('.dataTables_wrapper').addClass('mui-container-fluid');
   });
 </script>
+
 
 <style>
 /* --------------------------- */

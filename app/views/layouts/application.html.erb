@@ -7,39 +7,20 @@
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", media: "all" %>
-  <%= javascript_include_tag "application", type: "module", defer: true %>
-  <!-- Material UI CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/muicss@0.9.43/dist/css/mui.min.css">
-  
-  <!-- Custom Styles -->
-  <%= stylesheet_link_tag 'application', media: 'all' %>
-  
- <%= javascript_include_tag "application", "data-turbo-track": "reload" %>
 
-
-    
-
-
-
-
-
-
-
-    <script src='https://meet.jit.si/external_api.js'></script>
- 
-    <%= javascript_include_tag "application", "data-turbo-track": "reload", defer: true %>
-
+    <!-- Importmap for Rails -->
     <%= javascript_importmap_tags %>
 
+    <!-- Material UI CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/muicss@0.9.43/dist/css/mui.min.css">
+
+    <!-- Jitsi meet for video calls -->
+    <script src='https://meet.jit.si/external_api.js'></script>
   </head>
 
   <body>
-   
-
     <%= yield %>
 
     <script src="https://cdn.jsdelivr.net/npm/muicss@0.9.43/dist/js/mui.min.js"></script>
-
-
   </body>
 </html>

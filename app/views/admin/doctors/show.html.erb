@@ -378,11 +378,11 @@
             <li>
               <div class="info-label">Status:</div>
               <div class="info-value">
-                <% if @doctor.deleted? %>
-                  <span class="badge badge-danger">Deleted</span>
-                <% else %>
-                  <span class="badge badge-success">Active</span>
-                <% end %>
+              <% if @doctor.deleted? %>
+  <span class="badge badge-danger">Deleted</span>
+<% else %>
+  <span class="badge badge-success">Active</span>
+<% end %>
               </div>
             </li>
           </ul>

@@ -40,9 +40,9 @@ class Admin::DoctorsController < ApplicationController
     @doctor.soft_delete!
     redirect_to admin_doctors_path, notice: "Doctor was soft deleted."
   end
-  
+
   def restore
-    @doctor.update(deleted_at: nil)
+    @doctor.restore!
     redirect_to admin_doctors_path, notice: "Doctor was restored."
   end
 
